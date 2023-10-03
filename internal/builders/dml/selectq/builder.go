@@ -10,6 +10,7 @@ type Builder struct {
 	columns         []string
 	tableName       string
 	aliasName       string
+	joins           []iquery.Join
 	where           iquery.Where
 	orderByColumns  []string
 	isDescending    bool
@@ -23,6 +24,7 @@ type Builder struct {
 func New(columns ...string) *Builder {
 	builder := &Builder{
 		columns:         columns,
+		joins:           make([]iquery.Join, 0, 2),
 		where:           where.New(),
 		havingAggregate: aggregate.New(),
 		groupAggregate:  aggregate.New(),

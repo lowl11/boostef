@@ -1,6 +1,7 @@
 package selectq
 
 import (
+	"github.com/lowl11/boostef/data/enums/joins"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"strings"
 )
@@ -12,6 +13,9 @@ func (builder *Builder) Get(_ ...string) string {
 
 	// select
 	appendTable(&query, builder.tableName, builder.aliasName, builder.columns)
+
+	// join
+	appendJoins(&query, builder.joins)
 
 	// where
 	appendWhere(&query, builder.where)
@@ -44,6 +48,18 @@ func (builder *Builder) From(tableName string) iquery.Select {
 
 func (builder *Builder) SetAlias(aliasName string) iquery.Select {
 	return builder.setAlias(aliasName)
+}
+
+func (builder *Builder) Join(tableName, aliasName, joinColumn, mainColumn string) iquery.Select {
+	return builder.addJoin(joins.Inner, tableName, aliasName, joinColumn, mainColumn)
+}
+
+func (builder *Builder) LeftJoin(tableName, aliasName, joinColumn, mainColumn string) iquery.Select {
+	return builder.addJoin(joins.Left, tableName, aliasName, joinColumn, mainColumn)
+}
+
+func (builder *Builder) RightJoin(tableName, aliasName, joinColumn, mainColumn string) iquery.Select {
+	return builder.addJoin(joins.Right, tableName, aliasName, joinColumn, mainColumn)
 }
 
 func (builder *Builder) Where(whereFunc func(builder iquery.Where)) iquery.Select {

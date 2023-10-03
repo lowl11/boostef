@@ -6,6 +6,9 @@ type Select interface {
 	Select(columns ...string) Select
 	From(tableName string) Select
 	SetAlias(aliasName string) Select
+	Join(tableName, aliasName, joinColumn, mainColumn string) Select
+	LeftJoin(tableName, aliasName, joinColumn, mainColumn string) Select
+	RightJoin(tableName, aliasName, joinColumn, mainColumn string) Select
 	Where(func(Where)) Select
 	OrderBy(columns ...string) Select
 	OrderByDescending(columns ...string) Select

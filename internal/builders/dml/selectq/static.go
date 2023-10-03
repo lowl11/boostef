@@ -18,6 +18,13 @@ func appendTable(query *strings.Builder, tableName, aliasName string, columns []
 	}
 }
 
+func appendJoins(query *strings.Builder, joins []iquery.Join) {
+	for _, join := range joins {
+		query.WriteString("\n\t")
+		query.WriteString(join.Get())
+	}
+}
+
 func appendWhere(query *strings.Builder, whereQuery iquery.Where) {
 	whereClause := whereQuery.(iquery.Query).Get()
 	if len(whereClause) == 0 {

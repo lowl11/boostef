@@ -2,6 +2,7 @@ package selectq
 
 import (
 	"github.com/lowl11/boostef/data/interfaces/iquery"
+	"github.com/lowl11/boostef/internal/builders/dml/common/join"
 	"strings"
 )
 
@@ -113,5 +114,15 @@ func (builder *Builder) setLimit(limit int) *Builder {
 	}
 
 	builder.limit = limit
+	return builder
+}
+
+func (builder *Builder) addJoin(joinType, tableName, aliasName, joinColumn, mainColumn string) *Builder {
+	builder.joins = append(builder.joins, join.
+		New(joinType).
+		Table(tableName).
+		Alias(aliasName).
+		JoinColumn(joinColumn).
+		MainColumn(mainColumn))
 	return builder
 }
