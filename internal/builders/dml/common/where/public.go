@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (where *Where) Get() string {
+func (where *Where) Get(_ ...string) string {
 	separator := and + "\n\t"
 	if where.or {
 		separator = or
