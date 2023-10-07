@@ -9,7 +9,11 @@ import (
 
 func appendTable(query *strings.Builder, tableName, aliasName string, columns []string) {
 	query.WriteString("SELECT\n\t")
-	query.WriteString(strings.Join(columns, ", \n\t"))
+	if len(columns) == 0 {
+		query.WriteString("*")
+	} else {
+		query.WriteString(strings.Join(columns, ", \n\t"))
+	}
 	query.WriteString("\nFROM ")
 	query.WriteString(tableName)
 	if len(aliasName) > 0 {
