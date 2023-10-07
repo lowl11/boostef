@@ -32,6 +32,16 @@ func (dt *custom) setCustom(custom func(sql string) string) *custom {
 	return dt
 }
 
+func (dt *custom) Size(size int) iquery.DataType {
+	dt.size = size
+	return dt
+}
+
+func (dt *custom) Default(defaultValue string) iquery.DataType {
+	dt.defaultValue = defaultValue
+	return dt
+}
+
 func (dt *custom) AutoIncrement() iquery.DataType {
 	dt.setAutoIncrement()
 	return dt

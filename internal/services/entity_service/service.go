@@ -6,7 +6,8 @@ import (
 )
 
 type Service struct {
-	columns []models.Column
+	tableName string
+	columns   []models.Column
 }
 
 func New(entity any) *Service {
@@ -16,6 +17,7 @@ func New(entity any) *Service {
 	}
 
 	return &Service{
-		columns: fx.GetColumns(),
+		columns:   fx.GetColumns(),
+		tableName: fx.TableName(),
 	}
 }

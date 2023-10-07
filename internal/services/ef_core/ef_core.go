@@ -13,6 +13,7 @@ type EFCore struct {
 	maxConnections     int
 	maxIdleConnections int
 	maxIdleLifetime    time.Duration
+	schema             string
 
 	mutex sync.Mutex
 }
@@ -25,7 +26,8 @@ func Get() *EFCore {
 	}
 
 	instance = &EFCore{
-		sql: sqls.Postgres,
+		sql:    sqls.Postgres,
+		schema: "public",
 	}
 	return instance
 }

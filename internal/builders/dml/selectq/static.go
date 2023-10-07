@@ -50,12 +50,20 @@ func appendOrderBy(query *strings.Builder, orderByColumns []string, isDescending
 }
 
 func appendHaving(query *strings.Builder, aggregate iquery.Aggregate) {
+	if aggregate == nil {
+		return
+	}
+
 	query.WriteString("HAVING ")
 	query.WriteString(aggregate.(iquery.Query).Get())
 	query.WriteString("\n")
 }
 
 func appendGroupBy(query *strings.Builder, aggregate iquery.Aggregate, columns ...string) {
+	if aggregate == nil {
+		return
+	}
+
 	query.WriteString("GROUP BY ")
 	if len(columns) > 0 {
 		for index, column := range columns {
@@ -86,7 +94,12 @@ func appendLimit(query *strings.Builder, limit int) {
 func makeName(name string) string {
 	query := strings.Builder{}
 	query.Grow(len(name) + 2)
-	_, _ = fmt.Fprintf(&query, "\"%s\"", name)
+	if strings.Contains(name, ".") {
+		before, after, _ := strings.Cut(name, ".")
+		_, _ = fmt.Fprintf(&query, "\"%s\".\"%s\"", before, after)
+	} else {
+		_, _ = fmt.Fprintf(&query, "\"%s\"", name)
+	}
 	return query.String()
 }
 

@@ -3,6 +3,7 @@ package ef_core
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lowl11/boostef/internal/helpers/dialect"
+	"regexp"
 	"time"
 )
 
@@ -13,6 +14,15 @@ func (ef *EFCore) SetSQL(sql string) *EFCore {
 
 func (ef *EFCore) Dialect() string {
 	return ef.sql
+}
+
+func (ef *EFCore) Schema() string {
+	return ef.schema
+}
+
+func (ef *EFCore) SetSchema(schema string) *EFCore {
+	ef.schema = schema
+	return ef
 }
 
 func (ef *EFCore) Connection() *sqlx.DB {
@@ -42,6 +52,17 @@ func (ef *EFCore) SetConnectionString(connectionString string) *EFCore {
 	connectionPool.SetMaxIdleConns(ef.maxIdleConnections)
 	connectionPool.SetConnMaxIdleTime(ef.maxIdleLifetime)
 
+	// cut schema
+	var schema string
+	r, _ := regexp.Compile("SearchPath=(.*?)")
+	match := r.FindAllString(connectionString, -1)
+	if len(match) > 1 {
+		schema = match[0]
+	}
+
+	if len(schema) > 0 {
+		ef.schema = schema
+	}
 	ef.connection = connectionPool
 	return ef
 }

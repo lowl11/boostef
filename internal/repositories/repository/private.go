@@ -2,33 +2,12 @@ package repository
 
 import (
 	"github.com/lowl11/boostef/data/interfaces/iquery"
-	"github.com/lowl11/boostef/pkg/builder"
+	"github.com/lowl11/boostef/data/interfaces/irepository"
+	"github.com/lowl11/boostef/internal/repositories/common/session"
 )
 
-func (repo *Repository) lock() {
-	if !repo.threadSafe {
-		return
-	}
-
-	repo.mutex.Lock()
-}
-
-func (repo *Repository) unlock() {
-	if !repo.threadSafe {
-		return
-	}
-
-	repo.mutex.Unlock()
-}
-
-func (repo *Repository) getSelectQuery() iquery.Select {
-	repo.lock()
-	defer repo.unlock()
-
-	if repo.selectQuery != nil {
-		return repo.selectQuery
-	}
-
-	repo.selectQuery = builder.Select()
-	return repo.selectQuery
+func (repo *Repository) getSession(query iquery.Query) irepository.Session {
+	return session.
+		New(repo.connection, query).
+		SetPageSize(repo.pageSize)
 }

@@ -2,7 +2,6 @@ package selectq
 
 import (
 	"github.com/lowl11/boostef/data/interfaces/iquery"
-	"github.com/lowl11/boostef/internal/builders/dml/common/aggregate"
 	"github.com/lowl11/boostef/internal/builders/dml/common/where"
 )
 
@@ -23,12 +22,13 @@ type Builder struct {
 
 func New(columns ...string) *Builder {
 	builder := &Builder{
-		columns:         columns,
-		joins:           make([]iquery.Join, 0, 2),
-		where:           where.New(),
-		havingAggregate: aggregate.New(),
-		groupAggregate:  aggregate.New(),
-		groupByColumns:  make([]string, 0),
+		columns:        columns,
+		joins:          make([]iquery.Join, 0, 2),
+		where:          where.New(),
+		groupByColumns: make([]string, 0),
+
+		offset: -1,
+		limit:  -1,
 	}
 	builder.refreshColumns()
 	return builder

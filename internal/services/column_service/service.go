@@ -1,7 +1,8 @@
 package column_service
 
 type Service struct {
-	entity any
+	entity    any
+	tableName string
 }
 
 func New(entity any) *Service {

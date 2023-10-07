@@ -14,6 +14,7 @@ type base struct {
 	isForeign     bool
 	foreignTable  string
 	notNull       bool
+	defaultValue  string
 }
 
 func (dt *base) setAutoIncrement() {
@@ -69,12 +70,6 @@ func (dt *base) append(sql string, writer io.Writer) {
 
 		q := query.String()
 		last = &q
-
-		// product_id uuid,
-		// foreign key (product_id) references stock.products(id)
-
-		//_, _ = writer.Write([]byte(" REFERENCES "))
-		//_, _ = writer.Write([]byte(dt.foreignTable))
 	}
 
 	if dt.autoIncrement {
@@ -85,6 +80,11 @@ func (dt *base) append(sql string, writer io.Writer) {
 		if (sql == sqls.MySQL || sql == sqls.MSSQL) && dt.name != "SERIAL" {
 			_, _ = writer.Write([]byte(" AUTO_INCREMENT"))
 		}
+	}
+
+	if dt.defaultValue != "" {
+		_, _ = writer.Write([]byte(" DEFAULT "))
+		_, _ = writer.Write([]byte(dt.defaultValue))
 	}
 }
 

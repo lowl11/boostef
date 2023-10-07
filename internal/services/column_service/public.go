@@ -35,6 +35,11 @@ func (service *Service) GetColumns(customType ...reflect.Type) []models.Column {
 			continue
 		}
 
+		if tableNames := field.Tag("table"); len(tableNames) > 0 {
+			service.tableName = tableNames[0]
+			continue
+		}
+
 		fieldType := flex.Type(field.Type())
 		if fieldType.IsStruct() && !fieldType.IsTime() {
 			columns = append(columns, service.GetColumns(field.Type())...)
@@ -49,8 +54,13 @@ func (service *Service) GetColumns(customType ...reflect.Type) []models.Column {
 		columns = append(columns, models.Column{
 			Name:     dbTagValue[0],
 			DataType: defineType(field.Type()),
+			EfTags:   field.Tag("ef"),
 		})
 	}
 
 	return columns
+}
+
+func (service *Service) TableName() string {
+	return service.tableName
 }

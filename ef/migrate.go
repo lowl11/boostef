@@ -7,7 +7,8 @@ import (
 
 func Migrate(entities ...any) {
 	migrator.
-		New(ef_core.Get().Connection(), ef_core.Get().Dialect()).
+		New(ef_core.Get().Connection(), ef_core.Get().Dialect(), ef_core.Get().Schema()).
 		SetEntities(entities...).
-		GetReal()
+		GetReal().
+		Migrate()
 }
