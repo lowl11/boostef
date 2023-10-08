@@ -9,19 +9,16 @@ const (
 	defaultPageSize = 10
 )
 
-type Session struct {
+type Session[T any] struct {
 	connection *sqlx.DB
-
-	pageSize int
-
-	query     iquery.Query
-	predicate iquery.Where
+	q          iquery.Select
+	pageSize   int
 }
 
-func New(connection *sqlx.DB, query iquery.Query) *Session {
-	return &Session{
+func New[T any](connection *sqlx.DB, q iquery.Select) *Session[T] {
+	return &Session[T]{
 		connection: connection,
-		query:      query,
+		q:          q,
 		pageSize:   defaultPageSize,
 	}
 }

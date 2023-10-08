@@ -12,6 +12,11 @@ func (builder *Builder) refreshColumns() *Builder {
 	}
 
 	for i := 0; i < len(builder.columns); i++ {
+		// aggregate
+		if strings.Contains(builder.columns[i], "COUNT(") {
+			continue
+		}
+
 		// already field name with dot. Example: product.title -> "product"."title"
 		if before, after, found := strings.Cut(builder.columns[i], "."); found {
 			if isNamed(builder.columns[i]) {

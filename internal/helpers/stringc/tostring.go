@@ -58,8 +58,12 @@ func ToString(anyValue any) string {
 		if err != nil {
 			return ""
 		}
-		return string(valueInBytes)
+		return strings.ReplaceAll(string(valueInBytes), "\"", "'")
 	case reflect.Ptr:
+		if value.IsZero() || value.Elem().IsZero() {
+			return "NULL"
+		}
+
 		return ToString(value.Elem().Interface())
 	default:
 		return fmt.Sprintf("%v", value)

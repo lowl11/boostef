@@ -85,7 +85,7 @@ func appendGroupBy(query *strings.Builder, aggregate iquery.Aggregate, columns .
 
 func appendOffset(query *strings.Builder, offset int) {
 	if offset > -1 {
-		query.WriteString("OFFSET " + stringc.ToString(offset) + "\n")
+		query.WriteString("\nOFFSET " + stringc.ToString(offset) + "\n")
 	}
 }
 

@@ -3,31 +3,32 @@ package ef_core
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lowl11/boostef/pkg/enums/sqls"
-	"sync"
 	"time"
 )
 
-type EFCore struct {
-	sql                string
-	connection         *sqlx.DB
+type Core struct {
+	connection *sqlx.DB
+	sql        string
+	dialect    string
+
 	maxConnections     int
 	maxIdleConnections int
 	maxIdleLifetime    time.Duration
-	schema             string
-
-	mutex sync.Mutex
 }
 
-var instance *EFCore
+var instance *Core
 
-func Get() *EFCore {
+func Get() *Core {
 	if instance != nil {
 		return instance
 	}
 
-	instance = &EFCore{
-		sql:    sqls.Postgres,
-		schema: "public",
+	instance = &Core{
+		sql: sqls.Postgres,
+
+		maxConnections:     10,
+		maxIdleConnections: 10,
+		maxIdleLifetime:    time.Minute * 5,
 	}
 	return instance
 }

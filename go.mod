@@ -7,7 +7,7 @@ require (
 	github.com/google/uuid v1.3.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.2.0
-	github.com/lowl11/flex v0.0.4
+	github.com/lowl11/flex v0.0.8
 	github.com/microsoft/go-mssqldb v1.6.0
 )
 
