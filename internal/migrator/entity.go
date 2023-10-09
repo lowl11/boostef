@@ -7,8 +7,10 @@ import (
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/ef"
 	"github.com/lowl11/boostef/internal/compares"
+	"github.com/lowl11/boostef/internal/ef_core"
 	"github.com/lowl11/boostef/pkg/builder"
 	"github.com/lowl11/boostef/pkg/ctypes"
+	"strings"
 	"time"
 )
 
@@ -39,6 +41,9 @@ func (entity *Entity) CheckDestination() (bool, error) {
 		Limit(1).
 		Get())
 	if err != nil {
+		if strings.Contains(err.Error(), "does not exist") {
+			return false, nil
+		}
 		return false, err
 	}
 
@@ -52,6 +57,7 @@ func (entity *Entity) CreateDestination() error {
 	err := ef.Execute(ctx, builder.
 		CreateTable(entity.table).IfNotExist().
 		Column(entity.columns...).
+		Sql(ef_core.Get().SQL()).
 		Get())
 	if err != nil {
 		return err

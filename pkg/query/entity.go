@@ -6,7 +6,7 @@ import (
 )
 
 type Entity struct {
-	ID        uuid.UUID `db:"id"`
-	CreatedAt time.Time `db:"created_at"`
-	UpdatedAt time.Time `db:"updated_at"`
+	ID        uuid.UUID `db:"id" ef:"pk"`
+	CreatedAt time.Time `db:"created_at" ef:"default:now()"`
+	UpdatedAt time.Time `db:"updated_at" ef:"default:now()"`
 }
