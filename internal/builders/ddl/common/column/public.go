@@ -22,7 +22,15 @@ func (builder *Builder) Name(name string) iquery.Column {
 	return builder
 }
 
+func (builder *Builder) GetName() string {
+	return builder.name
+}
+
 func (builder *Builder) DataType(dataType iquery.DataType) iquery.Column {
 	builder.dataType = dataType
 	return builder
+}
+
+func (builder *Builder) GetDataType() iquery.DataType {
+	return builder.dataType
 }

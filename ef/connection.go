@@ -14,5 +14,10 @@ func SetConnection(connection *sqlx.DB) {
 }
 
 func Connection() *sqlx.DB {
-	return ef_core.Get().Connection()
+	conn := ef_core.Get().Connection()
+	if conn == nil {
+		panic("need to set connection before usage")
+	}
+
+	return conn
 }

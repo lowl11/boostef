@@ -10,8 +10,17 @@ type Builder struct {
 	mode      string
 	column    string
 	newName   string
-	dataType  iquery.DataType
 	sql       string
+
+	dataType      iquery.DataType
+	setAttributes string
+
+	isSet     bool
+	isType    bool
+	isReset   bool
+	isRestart bool
+	isAdd     bool
+	isDrop    bool
 }
 
 func New(tableName ...string) *Builder {

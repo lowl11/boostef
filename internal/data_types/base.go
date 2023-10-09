@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+const (
+	notNull       = " NOT NULL"
+	primaryKey    = " PRIMARY KEY"
+	autoIncrement = " AUTO_INCREMENT"
+	defaultValue  = " DEFAULT "
+)
+
 type base struct {
 	name          string
 	autoIncrement bool
@@ -43,11 +50,11 @@ func (dt *base) append(sql string, writer io.Writer) {
 	}()
 
 	if dt.notNull {
-		_, _ = writer.Write([]byte(" NOT NULL"))
+		_, _ = writer.Write([]byte(notNull))
 	}
 
 	if dt.isPrimary {
-		_, _ = writer.Write([]byte(" PRIMARY KEY"))
+		_, _ = writer.Write([]byte(primaryKey))
 	} else if dt.isForeign {
 		query := strings.Builder{}
 		query.WriteString(",\n\tFOREIGN KEY (% FIELD_NAME %) REFERENCES ")
@@ -78,12 +85,12 @@ func (dt *base) append(sql string, writer io.Writer) {
 		}
 
 		if (sql == sqls.MySQL || sql == sqls.MSSQL) && dt.name != "SERIAL" {
-			_, _ = writer.Write([]byte(" AUTO_INCREMENT"))
+			_, _ = writer.Write([]byte(autoIncrement))
 		}
 	}
 
 	if dt.defaultValue != "" {
-		_, _ = writer.Write([]byte(" DEFAULT "))
+		_, _ = writer.Write([]byte(defaultValue))
 		_, _ = writer.Write([]byte(dt.defaultValue))
 	}
 }

@@ -2,6 +2,7 @@ package data_types
 
 import (
 	"github.com/lowl11/boostef/data/interfaces/iquery"
+	"github.com/lowl11/boostef/internal/compares"
 	"io"
 	"strings"
 )
@@ -30,6 +31,39 @@ func Custom(name string, size ...int) iquery.DataType {
 func (dt *custom) setCustom(custom func(sql string) string) *custom {
 	dt.custom = custom
 	return dt
+}
+
+func (dt *custom) Equals(compare iquery.DataType) []string {
+	compareDataType := compare.(*custom)
+
+	different := make([]string, 0)
+	if dt.isPrimary != compareDataType.isPrimary {
+		if dt.isPrimary {
+			different = append(different, compares.IsPrimaryAdd)
+		} else {
+			different = append(different, compares.IsPrimaryRemove)
+		}
+	}
+
+	if dt.notNull != compareDataType.notNull {
+		var diff string
+		if dt.notNull {
+			diff = compares.NotNullAdd
+		} else {
+			diff = compares.NotNullRemove
+		}
+		different = append(different, diff)
+	}
+
+	if dt.name != compareDataType.name {
+		different = append(different, compares.Type)
+	}
+
+	return different
+}
+
+func (dt *custom) Name() string {
+	return dt.name
 }
 
 func (dt *custom) Size(size int) iquery.DataType {

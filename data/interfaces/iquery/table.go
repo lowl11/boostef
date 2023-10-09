@@ -27,9 +27,14 @@ type AlterTable interface {
 
 	Table(tableName string) AlterTable
 	SQL(sql string) AlterTable
-	Add(column string) AlterTable
-	Drop(column string) AlterTable
-	Rename(column, newName string) AlterTable
-	Alter(column string) AlterTable
-	DataType(dataType DataType) AlterTable
+	AddColumn(column string) AlterTable
+	DropColumn(column string) AlterTable
+	RenameColumn(column, newName string) AlterTable
+	AlterColumn(column string) AlterTable
+	Set(string) AlterTable
+	Type(DataType) AlterTable
+	Reset() AlterTable
+	Restart() AlterTable
+	Add() AlterTable
+	Drop() AlterTable
 }
