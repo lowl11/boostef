@@ -21,7 +21,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 			2.3. is it nullable? +
 			2.4. is it has default value? +
 			2.5. is it primary key? +
-			2.6. is it foreign key?
+			2.6. is it foreign key? +
 	*/
 
 	var tableName string
@@ -51,6 +51,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 		name := flexField.Tag("db")[0]
 		var defaultValue string
 		var isPrimaryKey bool
+		var foreign string
 
 		dt := convertDataType(flexField.Type())
 		if dt == nil {
@@ -63,12 +64,18 @@ func (converter *Converter) Entity() imigrate.Entity {
 				_, defaultValue, _ = strings.Cut(tag, ":")
 			} else if tag == "pk" {
 				isPrimaryKey = true
+			} else if strings.Contains(tag, "fk:") {
+				_, foreign, _ = strings.Cut(tag, ":")
 			}
 		}
 
 		dt.Default(defaultValue)
 		if isPrimaryKey {
 			dt.Primary()
+		}
+
+		if len(foreign) > 0 {
+			dt.Foreign(foreign)
 		}
 
 		columns = append(columns, builder.
