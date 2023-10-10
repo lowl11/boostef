@@ -52,6 +52,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 		var defaultValue string
 		var isPrimaryKey bool
 		var foreign string
+		var isUnique bool
 
 		dt := convertDataType(flexField.Type())
 		if dt == nil {
@@ -60,10 +61,12 @@ func (converter *Converter) Entity() imigrate.Entity {
 
 		efTags := flexField.Tag("ef")
 		for _, tag := range efTags {
-			if strings.Contains(tag, "default:") {
-				_, defaultValue, _ = strings.Cut(tag, ":")
-			} else if tag == "pk" {
+			if tag == "pk" {
 				isPrimaryKey = true
+			} else if tag == "unique" {
+				isUnique = true
+			} else if strings.Contains(tag, "default:") {
+				_, defaultValue, _ = strings.Cut(tag, ":")
 			} else if strings.Contains(tag, "fk:") {
 				_, foreign, _ = strings.Cut(tag, ":")
 			}
@@ -76,6 +79,10 @@ func (converter *Converter) Entity() imigrate.Entity {
 
 		if len(foreign) > 0 {
 			dt.Foreign(foreign)
+		}
+
+		if isUnique {
+			dt.Unique()
 		}
 
 		columns = append(columns, builder.

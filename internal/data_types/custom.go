@@ -86,6 +86,11 @@ func (dt *custom) NotNull() iquery.DataType {
 	return dt
 }
 
+func (dt *custom) Unique() iquery.DataType {
+	dt.isUnique = true
+	return dt
+}
+
 func (dt *custom) Primary() iquery.DataType {
 	dt.setPrimary()
 	return dt

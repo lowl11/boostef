@@ -22,6 +22,7 @@ type base struct {
 	foreignTable  string
 	notNull       bool
 	defaultValue  string
+	isUnique      bool
 }
 
 func (dt *base) setAutoIncrement() {
@@ -92,6 +93,10 @@ func (dt *base) append(sql string, writer io.Writer) {
 	if dt.defaultValue != "" {
 		_, _ = writer.Write([]byte(defaultValue))
 		_, _ = writer.Write([]byte(dt.defaultValue))
+	}
+
+	if dt.isUnique {
+		_, _ = writer.Write([]byte(" UNIQUE"))
 	}
 }
 

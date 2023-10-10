@@ -20,5 +20,6 @@ type DataType interface {
 	Primary() DataType
 	Foreign(string) DataType
 	NotNull() DataType
+	Unique() DataType
 	Equals(DataType) []string
 }
