@@ -81,7 +81,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 			dt.Foreign(foreign)
 		}
 
-		if isUnique {
+		if isUnique && !isPrimaryKey {
 			dt.Unique()
 		}
 

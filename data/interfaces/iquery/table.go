@@ -36,5 +36,5 @@ type AlterTable interface {
 	Reset() AlterTable
 	Restart() AlterTable
 	Add() AlterTable
-	Drop() AlterTable
+	Drop(string) AlterTable
 }

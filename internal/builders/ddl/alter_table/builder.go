@@ -12,8 +12,9 @@ type Builder struct {
 	newName   string
 	sql       string
 
-	dataType      iquery.DataType
-	setAttributes string
+	dataType       iquery.DataType
+	setAttributes  string
+	dropAttributes string
 
 	isSet     bool
 	isType    bool

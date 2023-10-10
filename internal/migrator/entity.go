@@ -81,32 +81,26 @@ func (entity *Entity) Compare() error {
 		return err
 	}
 
+	indexes, err := ef.ExecuteResult(ctx, builder.
+		Select().
+		From("pg_indexes").
+		Where(func(where iquery.Where) {
+			where.Equal("tablename", entity.table)
+		}).
+		Get())
+	if err != nil {
+		return err
+	}
+
 	destinationColumns := make([]iquery.Column, 0, len(entity.columns))
 	for _, result := range results {
 		if len(result) == 0 {
 			continue
 		}
 
-		col := builder.Column(fmt.Sprintf("%s", result["column_name"]))
-
-		// data_type
-		var defaultValue *string
-		if result["column_default"] != nil {
-			v := fmt.Sprintf("%s", result["column_default"])
-			defaultValue = &v
-		}
-
-		var maxLength int64
-		if result["character_maximum_length"] != nil {
-			maxLength = result["character_maximum_length"].(int64)
-		}
-
-		col.DataType(convertDataType(
-			fmt.Sprintf("%s", result["data_type"]),
-			fmt.Sprintf("%s", result["is_nullable"]),
-			defaultValue,
-			maxLength,
-		))
+		name := fmt.Sprintf("%s", result["column_name"])
+		col := builder.Column(name)
+		col.DataType(convertDataType(name, result, indexes))
 
 		destinationColumns = append(destinationColumns, col)
 	}
@@ -137,11 +131,32 @@ func (entity *Entity) Compare() error {
 						AlterColumn(sourceColumn.GetName()).
 						Set("NOT NULL").
 						Get())
+				case compares.NotNullRemove:
+					newQueries = append(newQueries, builder.
+						AlterTable(entity.table).
+						AlterColumn(sourceColumn.GetName()).
+						Drop("NOT NULL").
+						Get())
 				case compares.Type:
 					newQueries = append(newQueries, builder.
 						AlterTable(entity.table).
 						AlterColumn(sourceColumn.GetName()).
 						Type(sourceColumn.GetDataType()).
+						Get())
+				case compares.UniqueAdd:
+					indexName := strings.Builder{}
+					_, _ = fmt.Fprintf(&indexName, "%s_%s_unique", entity.table, sourceColumn.GetName())
+					newQueries = append(newQueries, builder.
+						CreateIndex(indexName.String()).
+						Unique().
+						TableColumns(entity.table, sourceColumn.GetName()).
+						Get())
+				case compares.UniqueRemove:
+					indexName := strings.Builder{}
+					_, _ = fmt.Fprintf(&indexName, "%s_%s_unique", entity.table, sourceColumn.GetName())
+					newQueries = append(newQueries, builder.
+						DropIndex(indexName.String()).
+						Table(entity.table).
 						Get())
 				}
 			}
@@ -172,7 +187,41 @@ func (entity *Entity) Compare() error {
 	return nil
 }
 
-func convertDataType(dataType, isNullable string, defaultValue *string, maxLength int64) iquery.DataType {
+func convertDataType(name string, column map[string]any, indexes []map[string]any) iquery.DataType {
+	var isUnique bool
+
+	// check indexes
+	for _, index := range indexes {
+		for key, value := range index {
+			valueStr := fmt.Sprintf("%s", value)
+			if key == "indexdef" {
+				if !strings.Contains(valueStr, name) {
+					continue
+				}
+
+				if strings.Contains(valueStr, "UNIQUE INDEX") {
+					isUnique = true
+				}
+			}
+		}
+	}
+
+	dataType := fmt.Sprintf("%s", column["data_type"])
+	isNullable := fmt.Sprintf("%s", column["is_nullable"])
+
+	// default value
+	var defaultValue *string
+	if column["column_default"] != nil {
+		v := fmt.Sprintf("%s", column["column_default"])
+		defaultValue = &v
+	}
+
+	// max length
+	var maxLength int64
+	if column["character_maximum_length"] != nil {
+		maxLength = column["character_maximum_length"].(int64)
+	}
+
 	var dt iquery.DataType
 
 	switch dataType {
@@ -204,6 +253,10 @@ func convertDataType(dataType, isNullable string, defaultValue *string, maxLengt
 
 	if defaultValue != nil {
 		dt.Default(*defaultValue)
+	}
+
+	if isUnique {
+		dt.Unique()
 	}
 
 	return dt

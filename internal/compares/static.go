@@ -8,4 +8,7 @@ const (
 	NotNullRemove = "not_null_remove"
 
 	Type = "type"
+
+	UniqueAdd    = "unique_add"
+	UniqueRemove = "unique_remove"
 )

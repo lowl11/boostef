@@ -59,6 +59,16 @@ func (dt *custom) Equals(compare iquery.DataType) []string {
 		different = append(different, compares.Type)
 	}
 
+	if dt.isUnique != compareDataType.isUnique && !dt.isPrimary && !dt.isForeign {
+		var diff string
+		if dt.isUnique {
+			diff = compares.UniqueAdd
+		} else {
+			diff = compares.UniqueRemove
+		}
+		different = append(different, diff)
+	}
+
 	return different
 }
 

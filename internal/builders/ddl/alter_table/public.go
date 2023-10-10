@@ -28,6 +28,9 @@ func (builder *Builder) Get(_ ...string) string {
 		} else if builder.isType {
 			query.WriteString("TYPE ")
 			query.WriteString(builder.dataType.Name())
+		} else if builder.isDrop {
+			query.WriteString("DROP ")
+			query.WriteString(builder.dropAttributes)
 		}
 	case "RENAME COLUMN":
 		query.WriteString(" TO ")
@@ -88,8 +91,9 @@ func (builder *Builder) Add() iquery.AlterTable {
 	return builder
 }
 
-func (builder *Builder) Drop() iquery.AlterTable {
+func (builder *Builder) Drop(attributes string) iquery.AlterTable {
 	builder.isDrop = true
+	builder.dropAttributes = attributes
 	return builder
 }
 
