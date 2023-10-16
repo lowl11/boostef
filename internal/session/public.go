@@ -4,10 +4,13 @@ import (
 	"context"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/data/interfaces/irepo"
+	"github.com/lowl11/boostef/ef"
 )
 
 func (session *Session[T]) Get(ctx context.Context) ([]T, error) {
-	rows, err := session.connection.QueryxContext(ctx, session.q.Get())
+	q := session.q.Get()
+	ef.DebugPrint(q)
+	rows, err := session.connection.QueryxContext(ctx, q)
 	if err != nil {
 		return nil, err
 	}
