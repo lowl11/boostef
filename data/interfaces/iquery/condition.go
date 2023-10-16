@@ -7,6 +7,9 @@ type Where interface {
 	Bool(field string, result bool) Where
 	Equal(field string, value any) Where
 	NotEqual(field string, value any) Where
+	Is(field string, value any) Where
+	IsNull(field string) Where
+	IsNotNull(field string) Where
 	In(field string, values []any) Where
 	Like(field, value string) Where
 	ILike(field, value string) Where

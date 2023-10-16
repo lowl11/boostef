@@ -63,6 +63,18 @@ func (where *Where) In(field string, values []any) iquery.Where {
 	return where.add(buildArray(field, signs.In, queryArray.String()))
 }
 
+func (where *Where) Is(field string, value any) iquery.Where {
+	return where.add(build(field, signs.Is, value))
+}
+
+func (where *Where) IsNull(field string) iquery.Where {
+	return where.add(build(field, signs.Is, "$NULL"))
+}
+
+func (where *Where) IsNotNull(field string) iquery.Where {
+	return where.add(build(field, signs.IsNot, "$NULL"))
+}
+
 func (where *Where) Like(field, value string) iquery.Where {
 	return where.add(build(field, signs.Like, value))
 }
