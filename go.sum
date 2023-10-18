@@ -19,8 +19,8 @@ github.com/jmoiron/sqlx v1.3.5/go.mod h1:nRVWtLre0KfCLJvgxzCsLVMogSvQ1zNJtpYr2Cc
 github.com/kylelemons/godebug v1.1.0 h1:RPNrshWIDI6G2gRW9EHilWtl7Z6Sb1BR0xunSBf0SNc=
 github.com/lib/pq v1.2.0 h1:LXpIM/LZ5xGFhOpXAQUIMM1HdyqzVYM13zNdjCEEcA0=
 github.com/lib/pq v1.2.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
-github.com/lowl11/flex v0.1.1 h1:A9JIJQY1bPLg5Gifp8aBtIVJO0TjfG+pR92GVOu7fMo=
-github.com/lowl11/flex v0.1.1/go.mod h1:LJgkXNzayHVFGo7Wr0jivPMe/xIrEBmjGCJY4kxlnOA=
+github.com/lowl11/flex v0.1.2 h1:LLP1NoFNVsjmyVVpEkQ+xDR4zROr3DZJF7Pyfh/jnf0=
+github.com/lowl11/flex v0.1.2/go.mod h1:LJgkXNzayHVFGo7Wr0jivPMe/xIrEBmjGCJY4kxlnOA=
 github.com/mattn/go-sqlite3 v1.14.6 h1:dNPt6NO46WmLVt2DLNpwczCmdV5boIZ6g/tlDrlRUbg=
 github.com/mattn/go-sqlite3 v1.14.6/go.mod h1:NyWgC/yNuGj7Q9rpYnZvas74GogHl5/Z4A/KQRfk6bU=
 github.com/microsoft/go-mssqldb v1.6.0 h1:mM3gYdVwEPFrlg/Dvr2DNVEgYFG7L42l+dGc67NNNpc=
