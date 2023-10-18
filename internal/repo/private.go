@@ -19,8 +19,12 @@ func (r *repo[T]) eatEntity(entity T) {
 			continue
 		}
 
-		if before == "table" {
+		switch before {
+		case "table":
 			r.tableName = after
+			break
+		case "alias":
+			r.aliasName = after
 			break
 		}
 	}

@@ -13,11 +13,16 @@ import (
 )
 
 func (r *repo[T]) Count(ctx context.Context, filter func(iquery.Where)) (int, error) {
-	q := builder.
+	selectBuilder := builder.
 		Select("COUNT(*)").
 		From(r.getTable()).
-		Where(filter).
-		Get()
+		Where(filter)
+
+	if len(r.aliasName) > 0 {
+		selectBuilder.SetAlias(r.aliasName)
+	}
+
+	q := selectBuilder.Get()
 
 	ef.DebugPrint(q)
 
@@ -39,10 +44,15 @@ func (r *repo[T]) Count(ctx context.Context, filter func(iquery.Where)) (int, er
 }
 
 func (r *repo[T]) All() irepo.Session[T] {
-	return session.New[T](r.connection, builder.
+	selectBuilder := builder.
 		Select(r.getColumns()...).
-		From(r.getTable()),
-	)
+		From(r.getTable())
+
+	if len(r.aliasName) > 0 {
+		selectBuilder.SetAlias(r.aliasName)
+	}
+
+	return session.New[T](r.connection, selectBuilder)
 }
 
 func (r *repo[T]) Create(ctx context.Context, entity T) error {

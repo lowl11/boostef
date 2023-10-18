@@ -11,6 +11,7 @@ type repo[T any] struct {
 	connection *sqlx.DB
 	entity     any
 	tableName  string
+	aliasName  string
 	fields     []reflect.StructField
 	columns    []string
 }
