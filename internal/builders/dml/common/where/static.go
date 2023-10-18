@@ -11,11 +11,16 @@ const (
 	or  = " OR "
 )
 
-func build(field, sign string, value any) string {
+func build(alias, field, sign string, value any) string {
 	valueString := stringc.ToString(value)
 
 	builder := strings.Builder{}
-	_, _ = fmt.Fprintf(&builder, "%s %s %s", field, sign, valueString)
+	if len(alias) > 0 {
+		_, _ = fmt.Fprintf(&builder, "%s.%s %s %s", alias, field, sign, valueString)
+	} else {
+		_, _ = fmt.Fprintf(&builder, "%s %s %s", field, sign, valueString)
+	}
+
 	return builder.String()
 }
 

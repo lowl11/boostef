@@ -81,6 +81,7 @@ func (builder *Builder) setAlias(aliasName string) *Builder {
 	}
 
 	builder.aliasName = makeName(aliasName)
+	builder.where.SetAlias(builder.aliasName)
 	return builder.refreshColumns()
 }
 

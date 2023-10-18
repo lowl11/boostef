@@ -1,6 +1,8 @@
 package iquery
 
 type Where interface {
+	SetAlias(alias string) Where
+
 	Not(func(Where) Where) Where
 	Or(func(Where) Where) Where
 

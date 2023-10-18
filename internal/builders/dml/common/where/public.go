@@ -21,13 +21,18 @@ func (where *Where) Get(_ ...string) string {
 	return result
 }
 
+func (where *Where) SetAlias(alias string) iquery.Where {
+	where.alias = alias
+	return where
+}
+
 func (where *Where) Not(condition func(iquery.Where) iquery.Where) iquery.Where {
-	where.add(not(condition(New()).(iquery.Query).Get()))
+	where.add(not(condition(New(where.alias)).(iquery.Query).Get()))
 	return where
 }
 
 func (where *Where) Or(condition func(iquery.Where) iquery.Where) iquery.Where {
-	where.add(condition(NewOr()).(iquery.Query).Get())
+	where.add(condition(NewOr(where.alias)).(iquery.Query).Get())
 	return where
 }
 
@@ -40,11 +45,11 @@ func (where *Where) Bool(field string, result bool) iquery.Where {
 }
 
 func (where *Where) Equal(field string, value any) iquery.Where {
-	return where.add(build(field, signs.Equal, value))
+	return where.add(build(where.alias, field, signs.Equal, value))
 }
 
 func (where *Where) NotEqual(field string, value any) iquery.Where {
-	return where.add(build(field, signs.NotEqual, value))
+	return where.add(build(where.alias, field, signs.NotEqual, value))
 }
 
 func (where *Where) In(field string, values []any) iquery.Where {
@@ -64,23 +69,23 @@ func (where *Where) In(field string, values []any) iquery.Where {
 }
 
 func (where *Where) Is(field string, value any) iquery.Where {
-	return where.add(build(field, signs.Is, value))
+	return where.add(build(where.alias, field, signs.Is, value))
 }
 
 func (where *Where) IsNull(field string) iquery.Where {
-	return where.add(build(field, signs.Is, "$NULL"))
+	return where.add(build(where.alias, field, signs.Is, "$NULL"))
 }
 
 func (where *Where) IsNotNull(field string) iquery.Where {
-	return where.add(build(field, signs.IsNot, "$NULL"))
+	return where.add(build(where.alias, field, signs.IsNot, "$NULL"))
 }
 
 func (where *Where) Like(field, value string) iquery.Where {
-	return where.add(build(field, signs.Like, value))
+	return where.add(build(where.alias, field, signs.Like, value))
 }
 
 func (where *Where) ILike(field, value string) iquery.Where {
-	return where.add(build(field, signs.ILike, value))
+	return where.add(build(where.alias, field, signs.ILike, value))
 }
 
 func (where *Where) Between(field string, left, right any) iquery.Where {
@@ -88,17 +93,17 @@ func (where *Where) Between(field string, left, right any) iquery.Where {
 }
 
 func (where *Where) Gte(field string, value any) iquery.Where {
-	return where.add(build(field, signs.Gte, value))
+	return where.add(build(where.alias, field, signs.Gte, value))
 }
 
 func (where *Where) Gt(field string, value any) iquery.Where {
-	return where.add(build(field, signs.Gt, value))
+	return where.add(build(where.alias, field, signs.Gt, value))
 }
 
 func (where *Where) Lte(field string, value any) iquery.Where {
-	return where.add(build(field, signs.Lte, value))
+	return where.add(build(where.alias, field, signs.Lte, value))
 }
 
 func (where *Where) Lt(field string, value any) iquery.Where {
-	return where.add(build(field, signs.Lt, value))
+	return where.add(build(where.alias, field, signs.Lt, value))
 }
