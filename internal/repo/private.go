@@ -14,17 +14,21 @@ func (r *repo[T]) eatEntity(entity T) {
 			continue
 		}
 
-		before, after, found := strings.Cut(tags[0], ":")
-		if !found {
-			continue
+		for _, tag := range tags {
+			before, after, found := strings.Cut(tag, ":")
+			if !found {
+				continue
+			}
+
+			switch before {
+			case "table":
+				r.tableName = after
+			case "alias":
+				r.aliasName = after
+			}
 		}
 
-		switch before {
-		case "table":
-			r.tableName = after
-			break
-		case "alias":
-			r.aliasName = after
+		if len(r.tableName) > 0 && len(r.aliasName) > 0 {
 			break
 		}
 	}
