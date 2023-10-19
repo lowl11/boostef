@@ -46,6 +46,13 @@ func (r *repo[T]) getPairs(entity T) []query.Pair {
 	pairs := make([]query.Pair, 0, len(r.columns))
 	fStr := flex.Struct(entity)
 	for _, column := range r.columns {
+		if strings.Contains(column, ".") {
+			_, after, found := strings.Cut(column, ".")
+			if found {
+				column = after
+			}
+		}
+		column = strings.ReplaceAll(column, "\"", "")
 		pairs = append(pairs, query.Pair{
 			Column: column,
 			Value:  fStr.FieldValueByTag("db", column),
