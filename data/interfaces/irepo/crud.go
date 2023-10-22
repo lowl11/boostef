@@ -14,6 +14,7 @@ type Crud[T any] interface {
 
 	Single(context.Context, func(iquery.Where)) (*T, error)
 	List(context.Context, func(iquery.Where)) ([]T, error)
+	ListPage(context.Context, func(iquery.Where), int) ([]T, error)
 
 	GetAll(context.Context) ([]T, error)
 	GetPage(context.Context, int) ([]T, error)

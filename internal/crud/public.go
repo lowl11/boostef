@@ -64,6 +64,14 @@ func (c *crud[T]) List(ctx context.Context, filter func(iquery.Where)) ([]T, err
 	return current.Get(ctx)
 }
 
+func (c *crud[T]) ListPage(ctx context.Context, filter func(iquery.Where), page int) ([]T, error) {
+	current := c.repo.All()
+	applyPredicate(current, c.predicate)
+	current.Where(filter)
+	current.SetPage(page)
+	return current.Get(ctx)
+}
+
 func (c *crud[T]) Add(ctx context.Context, entity T) error {
 	return c.repo.Create(ctx, entity)
 }
