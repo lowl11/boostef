@@ -7,7 +7,6 @@ import (
 	"github.com/lowl11/boostef/ef"
 	"github.com/lowl11/boostef/internal/session"
 	"github.com/lowl11/boostef/pkg/builder"
-	"github.com/lowl11/boostef/pkg/query"
 	"github.com/lowl11/flex"
 	"reflect"
 )
@@ -74,7 +73,7 @@ func (r *repo[T]) Create(ctx context.Context, entity T) error {
 func (r *repo[T]) Change(ctx context.Context, entity T) error {
 	baseEntity := flex.
 		Struct(entity).
-		FieldByType(reflect.TypeOf(query.Entity{})).(query.Entity)
+		FieldByType(reflect.TypeOf(ef.Entity{})).(ef.Entity)
 
 	q := builder.
 		Update(r.getTable()).
@@ -96,7 +95,7 @@ func (r *repo[T]) Change(ctx context.Context, entity T) error {
 func (r *repo[T]) Remove(ctx context.Context, entity T) error {
 	baseEntity := flex.
 		Struct(entity).
-		FieldByType(reflect.TypeOf(query.Entity{})).(query.Entity)
+		FieldByType(reflect.TypeOf(ef.Entity{})).(ef.Entity)
 
 	q := builder.
 		Delete(r.getTable()).
