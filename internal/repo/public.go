@@ -55,10 +55,10 @@ func (r *repo[T]) All() irepo.Session[T] {
 }
 
 func (r *repo[T]) Create(ctx context.Context, entity T) error {
-	q := filterQuery(builder.
+	q := builder.
 		Insert(r.getPairs(entity)...).
 		To(r.getTable()).
-		Get())
+		Get()
 
 	ef.DebugPrint(q)
 
@@ -75,12 +75,12 @@ func (r *repo[T]) Change(ctx context.Context, entity T) error {
 		Struct(entity).
 		FieldByType(reflect.TypeOf(ef.Entity{})).(ef.Entity)
 
-	q := filterQuery(builder.
+	q := builder.
 		Update(r.getTable()).
 		Set(r.getPairs(entity)...).
 		Where(func(where iquery.Where) {
 			where.Equal("id", baseEntity.ID)
-		}).Get())
+		}).Get()
 
 	ef.DebugPrint(q)
 
@@ -97,11 +97,11 @@ func (r *repo[T]) Remove(ctx context.Context, entity T) error {
 		Struct(entity).
 		FieldByType(reflect.TypeOf(ef.Entity{})).(ef.Entity)
 
-	q := filterQuery(builder.
+	q := builder.
 		Delete(r.getTable()).
 		Where(func(where iquery.Where) {
 			where.Equal("id", baseEntity.ID)
-		}).Get())
+		}).Get()
 
 	ef.DebugPrint(q)
 

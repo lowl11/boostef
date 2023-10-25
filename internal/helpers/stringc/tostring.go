@@ -40,6 +40,9 @@ func ToString(anyValue any) string {
 
 		valueString := strings.Builder{}
 		valueString.WriteString("'")
+		if strings.Contains(stringValue, "'") {
+			stringValue = strings.ReplaceAll(stringValue, "'", "''")
+		}
 		valueString.WriteString(stringValue)
 		valueString.WriteString("'")
 		return valueString.String()
