@@ -18,7 +18,7 @@ func ExecuteResult(ctx context.Context, script string) ([]map[string]any, error)
 	}
 	defer rows.Close()
 
-	result := make([]map[string]any, 5)
+	result := make([]map[string]any, 0, 5)
 	for rows.Next() {
 		item := make(map[string]any)
 		if err = rows.MapScan(item); err != nil {
