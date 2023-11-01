@@ -160,8 +160,6 @@ func (entity *Entity) Compare() error {
 						Get())
 				}
 			}
-
-			//fmt.Println(sourceColumn.GetName(), different)
 		}
 	}
 
@@ -244,7 +242,7 @@ func convertDataType(name string, column map[string]any, indexes []map[string]an
 	case "boolean", "bool":
 		dt = ctypes.Boolean()
 	default:
-		panic("does not support data type: " + dataType)
+		panic("unsupported data type: " + dataType + ". Name: " + name)
 	}
 
 	if isNullable == "NO" {
