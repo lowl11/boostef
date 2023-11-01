@@ -74,7 +74,9 @@ func (entity *Entity) Compare() error {
 		Select("column_name", "data_type", "column_default", "is_nullable", "character_maximum_length").
 		From("information_schema.columns").
 		Where(func(where iquery.Where) {
-			where.Equal("table_name", entity.table)
+			where.
+				Equal("table_name", entity.table).
+				NotEqual("table_schema", "information_schema")
 		}).
 		Get())
 	if err != nil {
