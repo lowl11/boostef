@@ -149,21 +149,21 @@ func (entity *Entity) Compare() error {
 					newQueries = append(newQueries, builder.
 						AlterTable(entity.table).
 						AlterColumn(sourceColumn.GetName()).
-						SQL(ef_core.Get().Dialect()).
+						SQL(ef_core.Get().SQL()).
 						Set("NOT NULL").
 						Get())
 				case compares.NotNullRemove:
 					newQueries = append(newQueries, builder.
 						AlterTable(entity.table).
 						AlterColumn(sourceColumn.GetName()).
-						SQL(ef_core.Get().Dialect()).
+						SQL(ef_core.Get().SQL()).
 						Drop("NOT NULL").
 						Get())
 				case compares.Type:
 					newQueries = append(newQueries, builder.
 						AlterTable(entity.table).
 						AlterColumn(sourceColumn.GetName()).
-						SQL(ef_core.Get().Dialect()).
+						SQL(ef_core.Get().SQL()).
 						Type(sourceColumn.GetDataType()).
 						Get())
 				case compares.UniqueAdd:
@@ -179,7 +179,7 @@ func (entity *Entity) Compare() error {
 					_, _ = fmt.Fprintf(&indexName, "%s_%s_unique", entity.table, sourceColumn.GetName())
 					newQueries = append(newQueries, builder.
 						DropIndex(indexName.String()).
-						SQL(ef_core.Get().Dialect()).
+						SQL(ef_core.Get().SQL()).
 						Table(entity.table).
 						Get())
 				}
@@ -195,7 +195,7 @@ func (entity *Entity) Compare() error {
 		newQueries = append(newQueries, builder.
 			AlterTable(entity.table).
 			AddColumn(key).
-			SQL(ef_core.Get().Dialect()).
+			SQL(ef_core.Get().SQL()).
 			Type(value.col.GetDataType()).
 			Get())
 	}

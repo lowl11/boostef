@@ -9,6 +9,10 @@ func Init(connectionString string) {
 	ef_core.Get().SetConnectionString(connectionString)
 }
 
+func SetSQL(sql string) {
+	ef_core.Get().SetSQL(sql)
+}
+
 func SetConnection(connection *sqlx.DB) {
 	ef_core.Get().SetConnection(connection)
 }
