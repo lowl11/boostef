@@ -223,7 +223,7 @@ func convertDataType(name string, column map[string]any, indexes []map[string]an
 		for key, value := range index {
 			valueStr := fmt.Sprintf("%s", value)
 			if key == "indexdef" {
-				if !strings.Contains(valueStr, name) {
+				if !strings.Contains(valueStr, "("+name+")") {
 					continue
 				}
 
