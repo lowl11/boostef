@@ -3,6 +3,7 @@ package migrator
 import (
 	"context"
 	"fmt"
+	"github.com/lowl11/boost/data/errors"
 	"github.com/lowl11/boostef/data/interfaces/imigrate"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/ef"
@@ -44,7 +45,12 @@ func (entity *Entity) CheckDestination() (bool, error) {
 		if strings.Contains(err.Error(), "does not exist") {
 			return false, nil
 		}
-		return false, err
+
+		return false, errors.
+			New("Check destination table exist or not").
+			SetType("EF_Migrate_CheckDestinationError").
+			SetError(err).
+			AddContext("table", entity.table)
 	}
 
 	return len(result) > 0, nil
@@ -60,7 +66,11 @@ func (entity *Entity) CreateDestination() error {
 		Sql(ef_core.Get().SQL()).
 		Get())
 	if err != nil {
-		return err
+		return errors.
+			New("Create destination table").
+			SetType("EF_Migrate_CreateDestinationTableError").
+			SetError(err).
+			AddContext("table", entity.table)
 	}
 
 	return nil
@@ -80,7 +90,11 @@ func (entity *Entity) Compare() error {
 		}).
 		Get())
 	if err != nil {
-		return err
+		return errors.
+			New("Get table columns error").
+			SetType("EF_Migrate_GetTableColumnsError").
+			SetError(err).
+			AddContext("table", entity.table)
 	}
 
 	indexes, err := ef.ExecuteResult(ctx, builder.
@@ -91,7 +105,11 @@ func (entity *Entity) Compare() error {
 		}).
 		Get())
 	if err != nil {
-		return err
+		return errors.
+			New("Get table indices error").
+			SetType("EF_Migrate_GetTableIndicesError").
+			SetError(err).
+			AddContext("table", entity.table)
 	}
 
 	destinationColumns := make([]iquery.Column, 0, len(entity.columns))
@@ -180,7 +198,12 @@ func (entity *Entity) Compare() error {
 	// execute queries
 	for _, newQuery := range newQueries {
 		if err = ef.Execute(ctx, newQuery); err != nil {
-			panic(err)
+			return errors.
+				New("Execute new table error").
+				SetType("EF_Migrate_NewTableError").
+				SetError(err).
+				AddContext("table", entity.table).
+				AddContext("query", newQuery)
 		}
 	}
 
