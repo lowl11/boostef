@@ -271,6 +271,8 @@ func convertDataType(name string, column map[string]any, indexes []map[string]an
 		dt = ctypes.Serial()
 	case "boolean", "bool":
 		dt = ctypes.Boolean()
+	case "jsonb":
+		dt = ctypes.JsonB()
 	default:
 		panic("unsupported data type: " + dataType + ". Name: " + name)
 	}
