@@ -54,7 +54,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 		var foreign string
 		var isUnique bool
 
-		dt := convertDataType(flexField.Type())
+		dt := convertDataType(flexField.Type(), flexField.Tag("ef"))
 		if dt == nil {
 			continue
 		}
@@ -93,7 +93,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 	return migrator.NewEntity(tableName).Columns(columns...)
 }
 
-func convertDataType(t reflect.Type) iquery.DataType {
+func convertDataType(t reflect.Type, efTags []string) iquery.DataType {
 	flexType := flex.Type(t)
 	isPtr := flexType.IsPtr()
 	t = flexType.Unwrap()
@@ -123,7 +123,11 @@ func convertDataType(t reflect.Type) iquery.DataType {
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		dt = ctypes.Integer()
 	case reflect.String:
-		dt = ctypes.Text()
+		if len(efTags) > 0 && efTags[0] == "jsonb" {
+			dt = ctypes.JsonB()
+		} else {
+			dt = ctypes.Text()
+		}
 	case reflect.Bool:
 		dt = ctypes.Boolean()
 	case reflect.Float32, reflect.Float64:
