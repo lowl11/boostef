@@ -60,3 +60,7 @@ func LongText(size ...int) iquery.DataType {
 func Uuid() iquery.DataType {
 	return data_types.UUID()
 }
+
+func JsonB() iquery.DataType {
+	return data_types.JsonB()
+}

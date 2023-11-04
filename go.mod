@@ -8,7 +8,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.2.0
 	github.com/lowl11/boost v0.1.24
-	github.com/lowl11/flex v0.1.3
+	github.com/lowl11/flex v0.1.4
 	github.com/microsoft/go-mssqldb v1.6.0
 )
 

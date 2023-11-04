@@ -153,3 +153,14 @@ func UUID() iquery.DataType {
 		return postgres.Varchar + "(16)"
 	})
 }
+
+func JsonB() iquery.DataType {
+	return createCustom(postgres.JsonB).setCustom(func(sql string) string {
+		switch sql {
+		case sqls.Postgres:
+			return postgres.JsonB
+		}
+
+		return all.Text
+	})
+}

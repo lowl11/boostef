@@ -107,6 +107,10 @@ func convertDataType(t reflect.Type) iquery.DataType {
 		dt = ctypes.Uuid()
 	}
 
+	if flexType.IsBytes() {
+		dt = ctypes.JsonB()
+	}
+
 	if dt != nil {
 		if !isPtr {
 			dt.NotNull()

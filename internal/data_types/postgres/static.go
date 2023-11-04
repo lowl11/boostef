@@ -13,6 +13,7 @@ const (
 	Varchar          = "VARCHAR"
 	Text             = "TEXT"
 	UUID             = "UUID"
+	JsonB            = "JSONB"
 )
 
 // numbers
