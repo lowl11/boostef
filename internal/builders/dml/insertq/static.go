@@ -29,14 +29,25 @@ func appendValues(query *strings.Builder, pairs []query.Pair) {
 		return
 	}
 
+	var isNamedValues bool
+	if pairs[0].Value == nil {
+		isNamedValues = true
+	}
+
 	query.WriteString("VALUES (")
 	for index, pair := range pairs {
-		query.WriteString(stringc.ToString(pair.Value))
+		if isNamedValues {
+			query.WriteString(":")
+			query.WriteString(pair.Column)
+		} else {
+			query.WriteString(stringc.ToString(pair.Value))
+		}
 
 		if index < len(pairs)-1 {
 			query.WriteString(", ")
 		}
 	}
+
 	query.WriteString(")\n")
 }
 

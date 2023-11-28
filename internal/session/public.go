@@ -10,7 +10,13 @@ import (
 func (session *Session[T]) Get(ctx context.Context) ([]T, error) {
 	q := session.q.Get()
 	ef.DebugPrint(q)
-	rows, err := session.connection.QueryxContext(ctx, q)
+
+	statement, err := session.connection.PreparexContext(ctx, q)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := statement.QueryxContext(ctx, session.args...)
 	if err != nil {
 		return nil, err
 	}

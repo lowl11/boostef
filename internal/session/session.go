@@ -12,13 +12,15 @@ const (
 type Session[T any] struct {
 	connection *sqlx.DB
 	q          iquery.Select
+	args       []any
 	pageSize   int
 }
 
-func New[T any](connection *sqlx.DB, q iquery.Select) *Session[T] {
+func New[T any](connection *sqlx.DB, q iquery.Select, args ...any) *Session[T] {
 	return &Session[T]{
 		connection: connection,
 		q:          q,
+		args:       args,
 		pageSize:   defaultPageSize,
 	}
 }

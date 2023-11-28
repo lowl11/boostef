@@ -14,7 +14,19 @@ func (builder *Builder) Get(_ ...string) string {
 	return q.String()
 }
 
+func (builder *Builder) GetParamStatus() (string, bool) {
+	var isParam bool
+	if len(builder.pairs) > 0 {
+		isParam = builder.pairs[0].Value == nil
+	}
+	return builder.Get(), isParam
+}
+
 func (builder *Builder) Pairs(pairs ...query.Pair) iquery.Insert {
+	if len(pairs) == 0 {
+		return builder
+	}
+
 	builder.pairs = pairs
 	return builder
 }

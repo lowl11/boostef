@@ -14,6 +14,7 @@ import (
 func (r *repo[T]) Count(ctx context.Context, filter func(iquery.Where)) (int, error) {
 	selectBuilder := builder.
 		Select("COUNT(*)").
+		SetAlias(r.aliasName).
 		From(r.getTable()).
 		Where(filter)
 
@@ -42,7 +43,7 @@ func (r *repo[T]) Count(ctx context.Context, filter func(iquery.Where)) (int, er
 	return count, nil
 }
 
-func (r *repo[T]) All() irepo.Session[T] {
+func (r *repo[T]) All(args ...any) irepo.Session[T] {
 	selectBuilder := builder.
 		Select(r.getColumns()...).
 		From(r.getTable())
@@ -51,18 +52,28 @@ func (r *repo[T]) All() irepo.Session[T] {
 		selectBuilder.SetAlias(r.aliasName)
 	}
 
-	return session.New[T](r.connection, selectBuilder)
+	return session.New[T](r.connection, selectBuilder, args...)
 }
 
 func (r *repo[T]) Create(ctx context.Context, entity T) error {
-	q := builder.
+	q, isParam := builder.
 		Insert(r.getPairs(entity)...).
 		To(r.getTable()).
-		Get()
+		GetParamStatus()
 
 	ef.DebugPrint(q)
 
-	_, err := r.connection.ExecContext(ctx, q)
+	var err error
+	if isParam {
+		statement, err := r.connection.PrepareNamedContext(ctx, q)
+		if err != nil {
+			return err
+		}
+
+		_, err = statement.ExecContext(ctx, entity)
+	} else {
+		_, err = r.connection.ExecContext(ctx, q)
+	}
 	if err != nil {
 		return err
 	}
@@ -75,18 +86,30 @@ func (r *repo[T]) Change(ctx context.Context, entity T) error {
 		Struct(entity).
 		FieldByType(reflect.TypeOf(ef.Entity{})).(ef.Entity)
 
-	q := builder.
+	q, isParam := builder.
 		Update(r.getTable()).
 		Set(r.getPairs(entity)...).
 		Where(func(where iquery.Where) {
 			where.Equal("id", baseEntity.ID)
-		}).Get()
+		}).GetParam()
 
 	ef.DebugPrint(q)
 
-	_, err := r.connection.ExecContext(ctx, q)
-	if err != nil {
-		return err
+	if isParam {
+		statement, err := r.connection.PrepareNamedContext(ctx, q)
+		if err != nil {
+			return err
+		}
+
+		_, err = statement.ExecContext(ctx, entity)
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err := r.connection.ExecContext(ctx, q)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -100,12 +123,17 @@ func (r *repo[T]) Remove(ctx context.Context, entity T) error {
 	q := builder.
 		Delete(r.getTable()).
 		Where(func(where iquery.Where) {
-			where.Equal("id", baseEntity.ID)
+			where.Equal("id", "$1")
 		}).Get()
 
 	ef.DebugPrint(q)
 
-	_, err := r.connection.ExecContext(ctx, q)
+	statement, err := r.connection.PreparexContext(ctx, q)
+	if err != nil {
+		return err
+	}
+
+	_, err = statement.ExecContext(ctx, baseEntity.ID)
 	if err != nil {
 		return err
 	}

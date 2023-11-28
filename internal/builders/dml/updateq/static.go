@@ -1,6 +1,7 @@
 package updateq
 
 import (
+	"github.com/lowl11/boost/pkg/system/types"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/internal/helpers/stringc"
 	"github.com/lowl11/boostef/pkg/query"
@@ -22,12 +23,19 @@ func appendSet(query *strings.Builder, pairs []query.Pair) {
 		return
 	}
 
+	isParam := types.ToString(pairs[0].Value) == ""
+
 	query.WriteString("SET\n")
 	for index, pair := range pairs {
 		query.WriteString("\t")
 		query.WriteString(pair.Column)
 		query.WriteString(" = ")
-		query.WriteString(stringc.ToString(pair.Value))
+
+		if isParam {
+			query.WriteString(":" + pair.Column)
+		} else {
+			query.WriteString(stringc.ToString(pair.Value))
+		}
 		if index < len(pairs)-1 {
 			query.WriteString(",\n")
 		}
