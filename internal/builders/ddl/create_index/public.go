@@ -13,6 +13,11 @@ func (builder *Builder) Get(_ ...string) string {
 	} else {
 		query.WriteString("CREATE INDEX ")
 	}
+
+	if builder.ifNotExist {
+		query.WriteString("IF NOT EXIST ")
+	}
+
 	query.WriteString(builder.name)
 	query.WriteString("\n")
 	query.WriteString("ON ")
@@ -28,6 +33,11 @@ func (builder *Builder) Get(_ ...string) string {
 	query.WriteString(")")
 
 	return query.String()
+}
+
+func (builder *Builder) IfNotExist() iquery.CreateIndex {
+	builder.ifNotExist = true
+	return builder
 }
 
 func (builder *Builder) Unique() iquery.CreateIndex {

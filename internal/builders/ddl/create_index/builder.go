@@ -1,10 +1,11 @@
 package create_index
 
 type Builder struct {
-	name    string
-	table   string
-	unique  bool
-	columns []string
+	name       string
+	table      string
+	unique     bool
+	columns    []string
+	ifNotExist bool
 }
 
 func New(name ...string) *Builder {
