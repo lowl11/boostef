@@ -1,7 +1,9 @@
 package ef
 
 import (
+	"context"
 	"github.com/lowl11/boostef/data/interfaces/imigrate"
+	"log"
 )
 
 func Migrate(entities ...imigrate.Entity) {
@@ -21,6 +23,14 @@ func Migrate(entities ...imigrate.Entity) {
 			if err = entity.Compare(); err != nil {
 				panic(err)
 			}
+		}
+	}
+}
+
+func Run(ctx context.Context, scripts ...string) {
+	for _, script := range scripts {
+		if err := Execute(ctx, script); err != nil {
+			log.Fatal(err)
 		}
 	}
 }

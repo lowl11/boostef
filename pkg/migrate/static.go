@@ -15,3 +15,7 @@ func Convert(entity any) imigrate.Entity {
 		New(entity).
 		Entity()
 }
+
+func Run(scripts ...string) {
+	//
+}
