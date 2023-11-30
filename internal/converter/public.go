@@ -94,6 +94,27 @@ func (converter *Converter) Entity() imigrate.Entity {
 }
 
 func convertDataType(t reflect.Type, efTags []string) iquery.DataType {
+	for _, tag := range efTags {
+		if strings.Contains(tag, "custom") {
+			_, customType, found := strings.Cut(tag, ":")
+			if !found {
+				continue
+			}
+
+			if len(customType) == 0 {
+				continue
+			}
+
+			custom := ctypes.Custom(customType)
+			isPtr := flex.Type(t).IsPtr()
+			if isPtr {
+				custom.NotNull()
+			}
+
+			return custom
+		}
+	}
+
 	flexType := flex.Type(t)
 	isPtr := flexType.IsPtr()
 	t = flexType.Unwrap()
@@ -141,4 +162,14 @@ func convertDataType(t reflect.Type, efTags []string) iquery.DataType {
 	}
 
 	return dt
+}
+
+func convertCustomType(custom string) (iquery.DataType, bool) {
+	if len(custom) == 0 {
+		return nil, false
+	}
+
+	ctypes.Custom(custom)
+
+	return nil, false
 }
