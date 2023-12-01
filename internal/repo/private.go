@@ -25,6 +25,11 @@ func (r *repo[T]) eatEntity(entity T) {
 				r.tableName = after
 			case "alias":
 				r.aliasName = after
+			case "part":
+				partitionColumns := strings.Split(after, ",")
+				if len(partitionColumns) > 0 {
+					r.partitionBy = partitionColumns
+				}
 			}
 		}
 
@@ -67,4 +72,8 @@ func (r *repo[T]) getColumns() []string {
 
 func (r *repo[T]) getTable() string {
 	return r.tableName
+}
+
+func (r *repo[T]) getPartitionColumns() []string {
+	return r.columns
 }

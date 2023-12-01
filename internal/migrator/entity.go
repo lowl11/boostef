@@ -16,8 +16,9 @@ import (
 )
 
 type Entity struct {
-	table   string
-	columns []iquery.Column
+	table            string
+	columns          []iquery.Column
+	partitionColumns []string
 }
 
 func NewEntity(table string) *Entity {
@@ -29,6 +30,11 @@ func NewEntity(table string) *Entity {
 
 func (entity *Entity) Columns(columns ...iquery.Column) imigrate.Entity {
 	entity.columns = columns
+	return entity
+}
+
+func (entity *Entity) PartitionColumns(columns ...string) imigrate.Entity {
+	entity.partitionColumns = columns
 	return entity
 }
 
@@ -60,11 +66,17 @@ func (entity *Entity) CreateDestination() error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	err := ef.Execute(ctx, builder.
-		CreateTable(entity.table).IfNotExist().
+	createTableQuery := builder.
+		CreateTable(entity.table).
+		IfNotExist().
 		Column(entity.columns...).
-		Sql(ef_core.Get().SQL()).
-		Get())
+		Sql(ef_core.Get().SQL())
+
+	if len(entity.partitionColumns) > 0 {
+		createTableQuery.PartitionBy(entity.partitionColumns...)
+	}
+
+	err := ef.Execute(ctx, createTableQuery.Get())
 	if err != nil {
 		return errors.
 			New("Create destination table").

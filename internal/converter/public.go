@@ -25,6 +25,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 	*/
 
 	var tableName string
+	partitionColumns := make([]string, 0)
 
 	flexStruct := flex.Struct(converter.entity)
 	fields := flexStruct.Fields()
@@ -34,6 +35,11 @@ func (converter *Converter) Entity() imigrate.Entity {
 			for _, tag := range efTags {
 				if strings.Contains(tag, "table") {
 					_, tableName, _ = strings.Cut(tag, ":")
+				} else if strings.Contains(tag, "part") {
+					_, partitionBy, found := strings.Cut(tag, ":")
+					if found {
+						partitionColumns = strings.Split(partitionBy, ",")
+					}
 				}
 			}
 		}
@@ -90,7 +96,10 @@ func (converter *Converter) Entity() imigrate.Entity {
 			DataType(dt))
 	}
 
-	return migrator.NewEntity(tableName).Columns(columns...)
+	return migrator.
+		NewEntity(tableName).
+		Columns(columns...).
+		PartitionColumns(partitionColumns...)
 }
 
 func convertDataType(t reflect.Type, efTags []string) iquery.DataType {
