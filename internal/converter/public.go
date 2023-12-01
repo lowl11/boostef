@@ -116,7 +116,7 @@ func convertDataType(t reflect.Type, efTags []string) iquery.DataType {
 
 			custom := ctypes.Custom(customType)
 			isPtr := flex.Type(t).IsPtr()
-			if isPtr {
+			if !isPtr {
 				custom.NotNull()
 			}
 
