@@ -6,6 +6,7 @@ type CreateTable interface {
 	Table(tableName string) CreateTable
 	IfNotExist() CreateTable
 	Column(columns ...Column) CreateTable
+	PartitionBy(columnNames ...string) CreateTable
 
 	Sql(sql string) CreateTable
 }

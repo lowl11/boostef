@@ -24,6 +24,16 @@ func (builder *Builder) Get(_ ...string) string {
 	}
 
 	query.WriteString("\n)")
+	if len(builder.partitionColumns) > 0 {
+		query.WriteString("\npartition by LIST (")
+		for index, col := range builder.partitionColumns {
+			query.WriteString(col)
+			if index < len(builder.partitionColumns)-1 {
+				query.WriteString(", ")
+			}
+		}
+		query.WriteString(")")
+	}
 	return query.String()
 }
 
@@ -39,6 +49,11 @@ func (builder *Builder) IfNotExist() iquery.CreateTable {
 
 func (builder *Builder) Column(columns ...iquery.Column) iquery.CreateTable {
 	builder.columns = append(builder.columns, columns...)
+	return builder
+}
+
+func (builder *Builder) PartitionBy(columnNames ...string) iquery.CreateTable {
+	builder.partitionColumns = columnNames
 	return builder
 }
 
