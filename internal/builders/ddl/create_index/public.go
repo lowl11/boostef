@@ -15,7 +15,7 @@ func (builder *Builder) Get(_ ...string) string {
 	}
 
 	if builder.ifNotExist {
-		query.WriteString("IF NOT EXIST ")
+		query.WriteString("IF NOT EXISTS ")
 	}
 
 	query.WriteString(builder.name)
