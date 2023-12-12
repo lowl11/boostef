@@ -265,7 +265,7 @@ func convertDataType(name string, column map[string]any, indexes []map[string]an
 	var dt iquery.DataType
 
 	switch dataType {
-	case "text":
+	case "text", "date":
 		dt = ctypes.Text()
 	case "varchar", "character varying":
 		if maxLength == 0 {
@@ -275,7 +275,8 @@ func convertDataType(name string, column map[string]any, indexes []map[string]an
 		dt = ctypes.Varchar(int(maxLength))
 	case "uuid":
 		dt = ctypes.Uuid()
-	case "timestamp", "timestampz", "timestamp without time zone", "timestamp with time zone":
+	case "timestamp", "timestampz",
+		"timestamp without time zone", "timestamp with time zone":
 		dt = ctypes.Timestamp()
 	case "int", "integer":
 		dt = ctypes.Integer()
