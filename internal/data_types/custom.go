@@ -34,6 +34,10 @@ func (dt *custom) setCustom(custom func(sql string) string) *custom {
 }
 
 func (dt *custom) Equals(compare iquery.DataType) []string {
+	if compare == nil {
+		return []string{}
+	}
+
 	compareDataType := compare.(*custom)
 
 	different := make([]string, 0)
