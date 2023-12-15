@@ -278,7 +278,7 @@ func convertDataType(name string, column map[string]any, indexes []map[string]an
 	case "timestamp", "timestampz",
 		"timestamp without time zone", "timestamp with time zone":
 		dt = ctypes.Timestamp()
-	case "int", "integer":
+	case "int", "integer", "bigint", "smallint":
 		dt = ctypes.Integer()
 	case "serial":
 		dt = ctypes.Serial()
