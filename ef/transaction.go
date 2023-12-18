@@ -14,7 +14,7 @@ func BeginTransaction(ctx context.Context) (context.Context, error) {
 	return context.WithValue(ctx, "boostef_transaction", tx), nil
 }
 
-func CloseTransaction(ctx context.Context) error {
+func CloseTransaction(ctx context.Context, errors ...error) error {
 	if ctx == nil {
 		return nil
 	}
@@ -25,13 +25,25 @@ func CloseTransaction(ctx context.Context) error {
 	}
 
 	tx := txValue.(*sqlx.Tx)
+
+	var uplevelError error
+	if len(errors) > 0 {
+		uplevelError = errors[0]
+	}
+
+	if uplevelError != nil {
+		if err := tx.Rollback(); err != nil {
+			return err
+		}
+	}
+
 	if err := tx.Commit(); err != nil {
+		if err = tx.Rollback(); err != nil {
+			return err
+		}
+
 		return err
 	}
 
-	if err := tx.Rollback(); err != nil {
-		return err
-	}
-	
 	return nil
 }
