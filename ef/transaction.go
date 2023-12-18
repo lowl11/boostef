@@ -2,6 +2,7 @@ package ef
 
 import (
 	"context"
+	"github.com/jmoiron/sqlx"
 	"github.com/lowl11/boost/log"
 	"github.com/lowl11/boostef/internal/transaction"
 	"strings"
@@ -65,4 +66,8 @@ func MustCommitTransaction(ctx context.Context) {
 	if err := CommitTransaction(ctx); err != nil {
 		log.Error(err, "Commit transaction error")
 	}
+}
+
+func GetTransaction(ctx context.Context) *sqlx.Tx {
+	return transaction.Get(ctx)
 }
