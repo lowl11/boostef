@@ -3,6 +3,7 @@ package ef
 import (
 	"context"
 	"github.com/jmoiron/sqlx"
+	"strings"
 )
 
 func BeginTransaction(ctx context.Context) (context.Context, error) {
@@ -38,8 +39,12 @@ func CloseTransaction(ctx context.Context, errors ...error) error {
 	}
 
 	if err := tx.Commit(); err != nil {
-		if err = tx.Rollback(); err != nil {
-			return err
+		return err
+	}
+
+	if err := tx.Rollback(); err != nil {
+		if strings.Contains(err.Error(), "transaction has already been committed") {
+			return nil
 		}
 
 		return err
