@@ -2,7 +2,7 @@ package ef
 
 import (
 	"context"
-	"github.com/jmoiron/sqlx"
+	"github.com/lowl11/boostef/internal/transaction"
 	"strings"
 )
 
@@ -20,12 +20,10 @@ func CloseTransaction(ctx context.Context, errors ...error) error {
 		return nil
 	}
 
-	txValue := ctx.Value("boostef_transaction")
-	if txValue == nil {
+	tx := transaction.Get(ctx)
+	if tx == nil {
 		return nil
 	}
-
-	tx := txValue.(*sqlx.Tx)
 
 	var uplevelError error
 	if len(errors) > 0 {
@@ -47,6 +45,36 @@ func CloseTransaction(ctx context.Context, errors ...error) error {
 			return nil
 		}
 
+		return err
+	}
+
+	return nil
+}
+
+func RollbackTransaction(ctx context.Context) error {
+	tx := transaction.Get(ctx)
+	if tx == nil {
+		return nil
+	}
+
+	if err := tx.Rollback(); err != nil {
+		if strings.Contains(err.Error(), "transaction has already been committed") {
+			return nil
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func CommitTransaction(ctx context.Context) error {
+	tx := transaction.Get(ctx)
+	if tx == nil {
+		return nil
+	}
+
+	if err := tx.Commit(); err != nil {
 		return err
 	}
 
