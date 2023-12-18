@@ -2,10 +2,12 @@ package repo
 
 import (
 	"context"
+	"github.com/jmoiron/sqlx"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/data/interfaces/irepo"
 	"github.com/lowl11/boostef/ef"
 	"github.com/lowl11/boostef/internal/session"
+	"github.com/lowl11/boostef/internal/transaction"
 	"github.com/lowl11/boostef/pkg/builder"
 	"github.com/lowl11/flex"
 	"reflect"
@@ -26,7 +28,15 @@ func (r *repo[T]) Count(ctx context.Context, filter func(iquery.Where)) (int, er
 
 	ef.DebugPrint(q)
 
-	rows, err := r.connection.QueryxContext(ctx, q)
+	tx := transaction.Get(ctx)
+
+	var rows *sqlx.Rows
+	var err error
+	if tx != nil {
+		rows, err = tx.QueryxContext(ctx, q)
+	} else {
+		rows, err = r.connection.QueryxContext(ctx, q)
+	}
 	if err != nil {
 		return 0, err
 	}
@@ -63,16 +73,28 @@ func (r *repo[T]) Create(ctx context.Context, entity T) error {
 
 	ef.DebugPrint(q)
 
+	tx := transaction.Get(ctx)
+
 	var err error
 	if isParam {
-		statement, err := r.connection.PrepareNamedContext(ctx, q)
+		var statement *sqlx.NamedStmt
+
+		if tx != nil {
+			statement, err = tx.PrepareNamedContext(ctx, q)
+		} else {
+			statement, err = r.connection.PrepareNamedContext(ctx, q)
+		}
 		if err != nil {
 			return err
 		}
 
 		_, err = statement.ExecContext(ctx, entity)
 	} else {
-		_, err = r.connection.ExecContext(ctx, q)
+		if tx != nil {
+			_, err = tx.ExecContext(ctx, q)
+		} else {
+			_, err = r.connection.ExecContext(ctx, q)
+		}
 	}
 	if err != nil {
 		return err
@@ -95,8 +117,16 @@ func (r *repo[T]) Change(ctx context.Context, entity T) error {
 
 	ef.DebugPrint(q)
 
+	tx := transaction.Get(ctx)
+
 	if isParam {
-		statement, err := r.connection.PrepareNamedContext(ctx, q)
+		var statement *sqlx.NamedStmt
+		var err error
+		if tx != nil {
+			statement, err = r.connection.PrepareNamedContext(ctx, q)
+		} else {
+			statement, err = r.connection.PrepareNamedContext(ctx, q)
+		}
 		if err != nil {
 			return err
 		}
@@ -106,7 +136,12 @@ func (r *repo[T]) Change(ctx context.Context, entity T) error {
 			return err
 		}
 	} else {
-		_, err := r.connection.ExecContext(ctx, q)
+		var err error
+		if tx != nil {
+			_, err = tx.ExecContext(ctx, q)
+		} else {
+			_, err = r.connection.ExecContext(ctx, q)
+		}
 		if err != nil {
 			return err
 		}
@@ -128,7 +163,15 @@ func (r *repo[T]) Remove(ctx context.Context, entity T) error {
 
 	ef.DebugPrint(q)
 
-	statement, err := r.connection.PreparexContext(ctx, q)
+	tx := transaction.Get(ctx)
+
+	var statement *sqlx.Stmt
+	var err error
+	if tx != nil {
+		statement, err = tx.PreparexContext(ctx, q)
+	} else {
+		statement, err = r.connection.PreparexContext(ctx, q)
+	}
 	if err != nil {
 		return err
 	}

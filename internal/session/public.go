@@ -2,16 +2,26 @@ package session
 
 import (
 	"context"
+	"github.com/jmoiron/sqlx"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/data/interfaces/irepo"
 	"github.com/lowl11/boostef/ef"
+	"github.com/lowl11/boostef/internal/transaction"
 )
 
 func (session *Session[T]) Get(ctx context.Context) ([]T, error) {
 	q := session.q.Get()
 	ef.DebugPrint(q)
 
-	statement, err := session.connection.PreparexContext(ctx, q)
+	tx := transaction.Get(ctx)
+
+	var statement *sqlx.Stmt
+	var err error
+	if tx != nil {
+		statement, err = tx.PreparexContext(ctx, q)
+	} else {
+		statement, err = session.connection.PreparexContext(ctx, q)
+	}
 	if err != nil {
 		return nil, err
 	}
