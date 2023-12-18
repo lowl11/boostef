@@ -2,6 +2,7 @@ package ef
 
 import (
 	"context"
+	"github.com/lowl11/boost/log"
 	"github.com/lowl11/boostef/internal/transaction"
 	"strings"
 )
@@ -68,6 +69,12 @@ func RollbackTransaction(ctx context.Context) error {
 	return nil
 }
 
+func MustRollbackTransaction(ctx context.Context) {
+	if err := RollbackTransaction(ctx); err != nil {
+		log.Error(err, "Rollback transaction error")
+	}
+}
+
 func CommitTransaction(ctx context.Context) error {
 	tx := transaction.Get(ctx)
 	if tx == nil {
@@ -79,4 +86,10 @@ func CommitTransaction(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func MustCommitTransaction(ctx context.Context) {
+	if err := CommitTransaction(ctx); err != nil {
+		log.Error(err, "Commit transaction error")
+	}
 }
