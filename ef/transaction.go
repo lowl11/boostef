@@ -16,40 +16,13 @@ func BeginTransaction(ctx context.Context) (context.Context, error) {
 	return context.WithValue(ctx, "boostef_transaction", tx), nil
 }
 
-func CloseTransaction(ctx context.Context, errors ...error) error {
-	if ctx == nil {
-		return nil
+func MustBeginTransaction(ctx context.Context) context.Context {
+	newCtx, err := BeginTransaction(ctx)
+	if err != nil {
+		return ctx
 	}
 
-	tx := transaction.Get(ctx)
-	if tx == nil {
-		return nil
-	}
-
-	var uplevelError error
-	if len(errors) > 0 {
-		uplevelError = errors[0]
-	}
-
-	if uplevelError != nil {
-		if err := tx.Rollback(); err != nil {
-			return err
-		}
-	}
-
-	if err := tx.Commit(); err != nil {
-		return err
-	}
-
-	if err := tx.Rollback(); err != nil {
-		if strings.Contains(err.Error(), "transaction has already been committed") {
-			return nil
-		}
-
-		return err
-	}
-
-	return nil
+	return newCtx
 }
 
 func RollbackTransaction(ctx context.Context) error {
