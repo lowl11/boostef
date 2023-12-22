@@ -25,3 +25,7 @@ func Connection() *sqlx.DB {
 
 	return conn
 }
+
+func TryGet() *sqlx.DB {
+	return ef_core.Get().Connection()
+}
