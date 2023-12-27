@@ -37,6 +37,14 @@ func Run(ctx context.Context, scripts ...string) error {
 	return nil
 }
 
+func RunError(ctx context.Context, onError func(err error), scripts ...string) {
+	for _, script := range scripts {
+		if err := Execute(ctx, script); err != nil {
+			onError(err)
+		}
+	}
+}
+
 func MustRun(ctx context.Context, scripts ...string) {
 	if err := Run(ctx, scripts...); err != nil {
 		log.Fatal(err, "Run scripts error")
