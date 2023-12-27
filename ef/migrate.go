@@ -2,8 +2,8 @@ package ef
 
 import (
 	"context"
+	"github.com/lowl11/boost/log"
 	"github.com/lowl11/boostef/data/interfaces/imigrate"
-	"log"
 )
 
 func Migrate(entities ...imigrate.Entity) {
@@ -27,10 +27,18 @@ func Migrate(entities ...imigrate.Entity) {
 	}
 }
 
-func Run(ctx context.Context, scripts ...string) {
+func Run(ctx context.Context, scripts ...string) error {
 	for _, script := range scripts {
 		if err := Execute(ctx, script); err != nil {
-			log.Fatal(err)
+			return err
 		}
+	}
+
+	return nil
+}
+
+func MustRun(ctx context.Context, scripts ...string) {
+	if err := Run(ctx, scripts...); err != nil {
+		log.Fatal(err, "Run scripts error")
 	}
 }
