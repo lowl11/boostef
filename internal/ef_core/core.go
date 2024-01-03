@@ -14,6 +14,7 @@ type Core struct {
 	maxConnections     int
 	maxIdleConnections int
 	maxIdleLifetime    time.Duration
+	maxLifetime        time.Duration
 }
 
 var instance *Core
@@ -28,7 +29,8 @@ func Get() *Core {
 
 		maxConnections:     10,
 		maxIdleConnections: 10,
-		maxIdleLifetime:    time.Minute * 5,
+		maxIdleLifetime:    time.Second * 30,
+		maxLifetime:        time.Second * 30,
 	}
 	return instance
 }

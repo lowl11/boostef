@@ -67,11 +67,12 @@ func (core *Core) Dialect() string {
 	return core.dialect
 }
 
-func (core *Core) SetupConnection(maxConnections, maxIdleConnections int, idleLifetime time.Duration) *Core {
+func (core *Core) SetupConnection(maxConnections, maxIdleConnections int, idleLifetime, lifetime time.Duration) *Core {
 	return core.
 		SetMaxConnections(maxConnections).
 		SetMaxIdleConnections(maxIdleConnections).
-		SetMaxIdleLifetime(core.maxIdleLifetime)
+		SetMaxIdleLifetime(idleLifetime).
+		SeMaxLifetime(lifetime)
 }
 
 func (core *Core) SetMaxConnections(maxConnections int) *Core {
@@ -86,5 +87,10 @@ func (core *Core) SetMaxIdleConnections(maxIdleConnections int) *Core {
 
 func (core *Core) SetMaxIdleLifetime(lifetime time.Duration) *Core {
 	core.maxIdleLifetime = lifetime
+	return core
+}
+
+func (core *Core) SeMaxLifetime(lifetime time.Duration) *Core {
+	core.maxLifetime = lifetime
 	return core
 }
