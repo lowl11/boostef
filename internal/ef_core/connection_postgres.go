@@ -1,13 +1,15 @@
 package ef_core
 
 import (
+	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
-	
-	_ "github.com/lib/pq"
 )
 
 func connectPostgres(connectionString string) (*sqlx.DB, error) {
-	connection, err := sqlx.Open("postgres", connectionString)
+	pgxConfig, _ := pgx.ParseConfig(connectionString)
+
+	connection, err := sqlx.Open("pgx", stdlib.RegisterConnConfig(pgxConfig))
 	if err != nil {
 		return nil, err
 	}
