@@ -6,10 +6,21 @@ import (
 	"github.com/lowl11/boost/log"
 	"github.com/lowl11/boostef/internal/transaction"
 	"strings"
+	"time"
 )
 
-func BeginTransaction(ctx context.Context) (context.Context, error) {
-	tx, err := Connection().Beginx()
+func BeginTransaction(ctx context.Context, duration *time.Duration) (context.Context, error) {
+	var tx *sqlx.Tx
+	var err error
+
+	if duration != nil {
+		txCtx, cancel := context.WithTimeout(context.Background(), *duration)
+		defer cancel()
+
+		tx, err = Connection().BeginTxx(txCtx, nil)
+	} else {
+		tx, err = Connection().Beginx()
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -17,8 +28,8 @@ func BeginTransaction(ctx context.Context) (context.Context, error) {
 	return context.WithValue(ctx, "boostef_transaction", tx), nil
 }
 
-func MustBeginTransaction(ctx context.Context) context.Context {
-	newCtx, err := BeginTransaction(ctx)
+func MustBeginTransaction(ctx context.Context, duration *time.Duration) context.Context {
+	newCtx, err := BeginTransaction(ctx, duration)
 	if err != nil {
 		return ctx
 	}
