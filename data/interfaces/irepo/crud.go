@@ -2,7 +2,6 @@ package irepo
 
 import (
 	"context"
-	"github.com/google/uuid"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 )
 
@@ -18,7 +17,7 @@ type Crud[T any] interface {
 
 	GetAll(context.Context) ([]T, error)
 	GetPage(context.Context, int) ([]T, error)
-	GetById(context.Context, uuid.UUID) (*T, error)
+	GetById(context.Context, string) (*T, error)
 
 	Add(context.Context, T) error
 	Update(context.Context, T) error

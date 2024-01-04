@@ -2,7 +2,6 @@ package crud
 
 import (
 	"context"
-	"github.com/google/uuid"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/data/interfaces/irepo"
 )
@@ -35,7 +34,7 @@ func (c *crud[T]) GetPage(ctx context.Context, page int) ([]T, error) {
 	return current.Get(ctx)
 }
 
-func (c *crud[T]) GetById(ctx context.Context, id uuid.UUID) (*T, error) {
+func (c *crud[T]) GetById(ctx context.Context, id string) (*T, error) {
 	return c.Single(ctx, func(where iquery.Where) {
 		where.Equal("id", id)
 	})
