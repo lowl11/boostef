@@ -6,8 +6,8 @@ import (
 	"github.com/lowl11/boostef/internal/migrator"
 )
 
-func Entity(tableName string) imigrate.Entity {
-	return migrator.NewEntity(tableName)
+func Entity(schema, tableName string) imigrate.Entity {
+	return migrator.NewEntity(schema, tableName)
 }
 
 func Convert(entity any) imigrate.Entity {

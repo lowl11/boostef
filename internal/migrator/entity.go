@@ -16,13 +16,15 @@ import (
 )
 
 type Entity struct {
+	schema           string
 	table            string
 	columns          []iquery.Column
 	partitionColumns []string
 }
 
-func NewEntity(table string) *Entity {
+func NewEntity(schema, table string) *Entity {
 	return &Entity{
+		schema:  schema,
 		table:   table,
 		columns: ef.EntityColumns(),
 	}
@@ -42,11 +44,12 @@ func (entity *Entity) CheckDestination() (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	result, err := ef.ExecuteResult(ctx, builder.
-		Select().
-		From(entity.table).
-		Limit(1).
-		Get())
+	query := fmt.Sprintf(`
+SELECT * FROM information_schema.tables
+WHERE table_schema = '%s' AND table_name = '%s'
+`, entity.schema, entity.table)
+
+	result, err := ef.ExecuteResult(ctx, query)
 	if err != nil {
 		if strings.Contains(err.Error(), "does not exist") {
 			return false, nil

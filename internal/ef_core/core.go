@@ -8,6 +8,7 @@ import (
 
 type Core struct {
 	connection *sqlx.DB
+	schema     string
 	sql        string
 	dialect    string
 

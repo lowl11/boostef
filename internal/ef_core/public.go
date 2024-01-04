@@ -4,6 +4,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lowl11/boostef/internal/helpers/dialect"
 	"github.com/lowl11/boostef/pkg/enums/sqls"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -36,6 +38,19 @@ func (core *Core) SetConnectionString(connectionString string) *Core {
 		panic(err)
 	}
 
+	dbSchema := "public"
+	searchPath := regexp.MustCompile("search_path=(.*)").FindAllString(connectionString, -1)
+	if len(searchPath) > 0 {
+		_, after, found := strings.Cut(searchPath[0], "=")
+		if found {
+			dbSchema = after
+		} else {
+			dbSchema = searchPath[0]
+		}
+	}
+
+	core.SetSchema(dbSchema)
+
 	// setting connection pool configurations
 	connection.SetMaxOpenConns(core.maxConnections)
 	connection.SetMaxIdleConns(core.maxIdleConnections)
@@ -52,6 +67,15 @@ func (core *Core) Connection() *sqlx.DB {
 func (core *Core) SetSQL(sql string) *Core {
 	core.sql = sql
 	return core.SetDialect(dialect.Get(sql))
+}
+
+func (core *Core) SetSchema(schema string) *Core {
+	core.schema = schema
+	return core
+}
+
+func (core *Core) Schema() string {
+	return core.schema
 }
 
 func (core *Core) SQL() string {

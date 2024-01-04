@@ -3,6 +3,7 @@ package converter
 import (
 	"github.com/lowl11/boostef/data/interfaces/imigrate"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
+	"github.com/lowl11/boostef/internal/ef_core"
 	"github.com/lowl11/boostef/internal/migrator"
 	"github.com/lowl11/boostef/pkg/builder"
 	"github.com/lowl11/boostef/pkg/ctypes"
@@ -97,7 +98,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 	}
 
 	return migrator.
-		NewEntity(tableName).
+		NewEntity(ef_core.Get().Schema(), tableName).
 		Columns(columns...).
 		PartitionColumns(partitionColumns...)
 }
