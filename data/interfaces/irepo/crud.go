@@ -18,6 +18,7 @@ type Crud[T any] interface {
 	GetAll(context.Context) ([]T, error)
 	GetPage(context.Context, int) ([]T, error)
 	GetById(context.Context, string) (*T, error)
+	GetByIDs(ctx context.Context, ids []string) ([]T, error)
 
 	Add(context.Context, T) error
 	Update(context.Context, T) error
