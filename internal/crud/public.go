@@ -27,17 +27,28 @@ func (c *crud[T]) GetAll(ctx context.Context) ([]T, error) {
 	return c.List(ctx, func(where iquery.Where) {})
 }
 
+func (c *crud[T]) GetById(ctx context.Context, id string) (*T, error) {
+	return c.Single(ctx, func(where iquery.Where) {
+		where.Equal("id", id)
+	})
+}
+
+func (c *crud[T]) GetByIDs(ctx context.Context, ids []string) ([]T, error) {
+	anyIDs := make([]any, 0, len(ids))
+	for _, id := range ids {
+		anyIDs = append(anyIDs, id)
+	}
+
+	return c.List(ctx, func(where iquery.Where) {
+		where.In("id", anyIDs)
+	})
+}
+
 func (c *crud[T]) GetPage(ctx context.Context, page int) ([]T, error) {
 	current := c.repo.All()
 	applyPredicate(current, c.predicate)
 	current.SetPage(page)
 	return current.Get(ctx)
-}
-
-func (c *crud[T]) GetById(ctx context.Context, id string) (*T, error) {
-	return c.Single(ctx, func(where iquery.Where) {
-		where.Equal("id", id)
-	})
 }
 
 func (c *crud[T]) Single(ctx context.Context, filter func(iquery.Where)) (*T, error) {
