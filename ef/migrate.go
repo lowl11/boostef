@@ -6,22 +6,60 @@ import (
 	"github.com/lowl11/boostef/data/interfaces/imigrate"
 )
 
-func Migrate(entities ...imigrate.Entity) {
+func Migrate(entities ...imigrate.Entity) error {
 	for _, entity := range entities {
 		found, err := entity.CheckDestination()
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		if !found {
 			// create table
 			if err = entity.CreateDestination(); err != nil {
-				panic(err)
+				return err
 			}
 		} else {
 			// compare columns & decide, call alter table or not
 			if err = entity.Compare(); err != nil {
-				panic(err)
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func MustMigrate(entities ...imigrate.Entity) {
+	if err := Migrate(entities...); err != nil {
+		panic(err)
+	}
+}
+
+func MigrateError(handler func(error), entities ...imigrate.Entity) {
+	for _, entity := range entities {
+		found, err := entity.CheckDestination()
+		if err != nil {
+			if handler != nil {
+				handler(err)
+			}
+			continue
+		}
+
+		if !found {
+			// create table
+			if err = entity.CreateDestination(); err != nil {
+				if handler != nil {
+					handler(err)
+				}
+				continue
+			}
+		} else {
+			// compare columns & decide, call alter table or not
+			if err = entity.Compare(); err != nil {
+				if handler != nil {
+					handler(err)
+				}
+				continue
 			}
 		}
 	}
