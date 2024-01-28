@@ -183,3 +183,32 @@ func (r *repo[T]) Remove(ctx context.Context, entity T) error {
 
 	return nil
 }
+
+func (r *repo[T]) RemoveBy(ctx context.Context, where func(iquery.Where)) error {
+	q := builder.
+		Delete(r.getTable()).
+		Where(where).
+		Get()
+
+	ef.DebugPrint(q)
+
+	tx := transaction.Get(ctx)
+
+	var statement *sqlx.Stmt
+	var err error
+	if tx != nil {
+		statement, err = tx.PreparexContext(ctx, q)
+	} else {
+		statement, err = r.connection.PreparexContext(ctx, q)
+	}
+	if err != nil {
+		return err
+	}
+
+	_, err = statement.ExecContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

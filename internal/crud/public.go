@@ -93,3 +93,7 @@ func (c *crud[T]) Update(ctx context.Context, entity T) error {
 func (c *crud[T]) Delete(ctx context.Context, entity T) error {
 	return c.repo.Remove(ctx, entity)
 }
+
+func (c *crud[T]) DeleteBy(ctx context.Context, filter func(iquery.Where)) error {
+	return c.repo.RemoveBy(ctx, filter)
+}

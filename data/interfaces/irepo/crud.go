@@ -23,4 +23,5 @@ type Crud[T any] interface {
 	Add(context.Context, T) error
 	Update(context.Context, T) error
 	Delete(context.Context, T) error
+	DeleteBy(ctx context.Context, filter func(iquery.Where)) error
 }

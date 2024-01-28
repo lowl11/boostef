@@ -11,4 +11,5 @@ type Repo[T any] interface {
 	Create(context.Context, T) error
 	Change(context.Context, T) error
 	Remove(context.Context, T) error
+	RemoveBy(context.Context, func(iquery.Where)) error
 }
