@@ -7,6 +7,7 @@ import (
 
 type Converter struct {
 	entity any
+	name   string
 }
 
 func New(entity any) *Converter {
@@ -16,5 +17,6 @@ func New(entity any) *Converter {
 
 	return &Converter{
 		entity: entity,
+		name:   reflect.TypeOf(entity).Name(),
 	}
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func Entity(schema, tableName string) imigrate.Entity {
-	return migrator.NewEntity(schema, tableName)
+	return migrator.NewEntity(schema, tableName, "")
 }
 
 func Convert(entity any) imigrate.Entity {

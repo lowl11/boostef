@@ -98,7 +98,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 	}
 
 	return migrator.
-		NewEntity(ef_core.Get().Schema(), tableName).
+		NewEntity(ef_core.Get().Schema(), tableName, converter.name).
 		Columns(columns...).
 		PartitionColumns(partitionColumns...)
 }

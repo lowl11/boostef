@@ -18,16 +18,30 @@ import (
 type Entity struct {
 	schema           string
 	table            string
+	name             string
 	columns          []iquery.Column
 	partitionColumns []string
 }
 
-func NewEntity(schema, table string) *Entity {
+func NewEntity(schema, table, name string) *Entity {
 	return &Entity{
 		schema:  schema,
 		table:   table,
+		name:    name,
 		columns: ef.EntityColumns(),
 	}
+}
+
+func (entity *Entity) Table() string {
+	return entity.table
+}
+
+func (entity *Entity) Name() string {
+	if entity.name == "" {
+		return entity.table
+	}
+
+	return entity.name
 }
 
 func (entity *Entity) Columns(columns ...iquery.Column) imigrate.Entity {

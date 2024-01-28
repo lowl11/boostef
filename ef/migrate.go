@@ -35,12 +35,12 @@ func MustMigrate(entities ...imigrate.Entity) {
 	}
 }
 
-func MigrateError(handler func(error), entities ...imigrate.Entity) {
+func MigrateError(handler func(string, error), entities ...imigrate.Entity) {
 	for _, entity := range entities {
 		found, err := entity.CheckDestination()
 		if err != nil {
 			if handler != nil {
-				handler(err)
+				handler(entity.Name(), err)
 			}
 			continue
 		}
@@ -49,7 +49,7 @@ func MigrateError(handler func(error), entities ...imigrate.Entity) {
 			// create table
 			if err = entity.CreateDestination(); err != nil {
 				if handler != nil {
-					handler(err)
+					handler(entity.Name(), err)
 				}
 				continue
 			}
@@ -57,7 +57,7 @@ func MigrateError(handler func(error), entities ...imigrate.Entity) {
 			// compare columns & decide, call alter table or not
 			if err = entity.Compare(); err != nil {
 				if handler != nil {
-					handler(err)
+					handler(entity.Name(), err)
 				}
 				continue
 			}
