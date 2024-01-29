@@ -8,7 +8,7 @@ require (
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lowl11/boost v0.4.4
-	github.com/lowl11/flex v0.1.4
+	github.com/lowl11/flex v0.1.5
 	github.com/microsoft/go-mssqldb v1.6.0
 )
 
@@ -25,6 +25,7 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgtype v1.14.0 // indirect
 	github.com/klauspost/compress v1.16.3 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.48.0 // indirect
 	golang.org/x/crypto v0.12.0 // indirect

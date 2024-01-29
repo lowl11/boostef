@@ -3,7 +3,7 @@ package migrator
 import (
 	"context"
 	"fmt"
-	"github.com/lowl11/boost/data/errors"
+	"github.com/lowl11/boost/errors"
 	"github.com/lowl11/boostef/data/interfaces/imigrate"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/ef"
