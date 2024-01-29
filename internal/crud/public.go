@@ -2,6 +2,7 @@ package crud
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/lowl11/boostef/data/interfaces/iquery"
 	"github.com/lowl11/boostef/data/interfaces/irepo"
 )
@@ -27,16 +28,16 @@ func (c *crud[T]) GetAll(ctx context.Context) ([]T, error) {
 	return c.List(ctx, func(where iquery.Where) {})
 }
 
-func (c *crud[T]) GetById(ctx context.Context, id string) (*T, error) {
+func (c *crud[T]) GetById(ctx context.Context, id uuid.UUID) (*T, error) {
 	return c.Single(ctx, func(where iquery.Where) {
-		where.Equal("id", id)
+		where.Equal("id", id.String())
 	})
 }
 
-func (c *crud[T]) GetByIDs(ctx context.Context, ids []string) ([]T, error) {
+func (c *crud[T]) GetByIDs(ctx context.Context, ids []uuid.UUID) ([]T, error) {
 	anyIDs := make([]any, 0, len(ids))
 	for _, id := range ids {
-		anyIDs = append(anyIDs, id)
+		anyIDs = append(anyIDs, id.String())
 	}
 
 	return c.List(ctx, func(where iquery.Where) {
