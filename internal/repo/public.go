@@ -176,7 +176,7 @@ func (r *repo[T]) Remove(ctx context.Context, entity T) error {
 		return err
 	}
 
-	_, err = statement.ExecContext(ctx, baseEntity.ID)
+	_, err = statement.ExecContext(ctx, baseEntity.ID.String())
 	if err != nil {
 		return err
 	}
