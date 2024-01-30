@@ -43,3 +43,7 @@ func Connection() *sqlx.DB {
 func TryGet() *sqlx.DB {
 	return ef_core.Get().Connection()
 }
+
+func SetSchema(schema string) {
+	ef_core.Get().SetSchema(schema)
+}
