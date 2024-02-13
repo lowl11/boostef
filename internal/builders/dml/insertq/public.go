@@ -9,7 +9,7 @@ import (
 func (builder *Builder) Get(_ ...string) string {
 	q := strings.Builder{}
 	appendInsert(&q, builder.tableName, builder.pairs)
-	appendValues(&q, builder.pairs)
+	appendValues(&q, builder.pairs, builder.multiplePairs)
 	appendOnConflict(&q, builder.conflict)
 	return q.String()
 }
@@ -38,5 +38,10 @@ func (builder *Builder) To(tableName string) iquery.Insert {
 
 func (builder *Builder) OnConflict(query string) iquery.Insert {
 	builder.conflict = query
+	return builder
+}
+
+func (builder *Builder) Values(pairs ...query.Pair) iquery.Insert {
+	builder.multiplePairs = append(builder.multiplePairs, pairs)
 	return builder
 }

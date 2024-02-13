@@ -24,31 +24,59 @@ func appendInsert(query *strings.Builder, tableName string, pairs []query.Pair) 
 	query.WriteString(")\n")
 }
 
-func appendValues(query *strings.Builder, pairs []query.Pair) {
+func appendValues(query *strings.Builder, pairs []query.Pair, multiplePairs [][]query.Pair) {
 	if len(pairs) == 0 {
 		return
 	}
+
+	isMultiple := len(multiplePairs) > 0
 
 	var isNamedValues bool
 	if pairs[0].Value == nil {
 		isNamedValues = true
 	}
 
-	query.WriteString("VALUES (")
-	for index, pair := range pairs {
-		if isNamedValues {
-			query.WriteString(":")
-			query.WriteString(pair.Column)
-		} else {
-			query.WriteString(stringc.ToString(pair.Value))
-		}
+	if !isMultiple {
+		query.WriteString("VALUES (")
+	} else {
+		query.WriteString("VALUES\n")
+	}
 
-		if index < len(pairs)-1 {
-			query.WriteString(", ")
+	if !isMultiple {
+		for index, pair := range pairs {
+			if isNamedValues {
+				query.WriteString(":")
+				query.WriteString(pair.Column)
+			} else {
+				query.WriteString(stringc.ToString(pair.Value))
+			}
+
+			if index < len(pairs)-1 {
+				query.WriteString(", ")
+			}
+		}
+	} else {
+		for mIndex, mPairs := range multiplePairs {
+			query.WriteString("\t(")
+			for index, pair := range mPairs {
+				query.WriteString(stringc.ToString(pair.Value))
+
+				if index < len(mPairs)-1 {
+					query.WriteString(", ")
+				}
+			}
+
+			query.WriteString(")")
+			if mIndex < len(multiplePairs)-1 {
+				query.WriteString(",")
+			}
+			query.WriteString("\n")
 		}
 	}
 
-	query.WriteString(")\n")
+	if !isMultiple {
+		query.WriteString(")\n")
+	}
 }
 
 func appendOnConflict(query *strings.Builder, conflict string) {
