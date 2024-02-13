@@ -22,6 +22,7 @@ type Crud[T any] interface {
 	GetByIDs(ctx context.Context, ids []uuid.UUID) ([]T, error)
 
 	Add(context.Context, T) error
+	AddList(ctx context.Context, entities []T) error
 	Update(context.Context, T) error
 	Delete(context.Context, T) error
 	DeleteBy(ctx context.Context, filter func(iquery.Where)) error

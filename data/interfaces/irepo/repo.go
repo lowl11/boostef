@@ -9,6 +9,7 @@ type Repo[T any] interface {
 	Count(context.Context, func(iquery.Where)) (int, error)
 	All(args ...any) Session[T]
 	Create(context.Context, T) error
+	CreateList(context.Context, []T) error
 	Change(context.Context, T) error
 	Remove(context.Context, T) error
 	RemoveBy(context.Context, func(iquery.Where)) error

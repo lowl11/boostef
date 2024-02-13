@@ -103,6 +103,37 @@ func (r *repo[T]) Create(ctx context.Context, entity T) error {
 	return nil
 }
 
+func (r *repo[T]) CreateList(ctx context.Context, entities []T) error {
+	if len(entities) == 0 {
+		return nil
+	}
+
+	pairs := r.getPairs(entities[0])
+
+	insert := builder.Insert(pairs...).To(r.getTable())
+	for _, entity := range entities {
+		insert.Values(r.getPairs(entity)...)
+	}
+
+	q := insert.Get()
+
+	ef.DebugPrint(q)
+
+	tx := transaction.Get(ctx)
+
+	var err error
+	if tx != nil {
+		_, err = tx.ExecContext(ctx, q)
+	} else {
+		_, err = r.connection.ExecContext(ctx, q)
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r *repo[T]) Change(ctx context.Context, entity T) error {
 	baseEntity := flex.
 		Struct(entity).

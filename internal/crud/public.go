@@ -87,6 +87,10 @@ func (c *crud[T]) Add(ctx context.Context, entity T) error {
 	return c.repo.Create(ctx, entity)
 }
 
+func (c *crud[T]) AddList(ctx context.Context, entities []T) error {
+	return c.repo.CreateList(ctx, entities)
+}
+
 func (c *crud[T]) Update(ctx context.Context, entity T) error {
 	return c.repo.Change(ctx, entity)
 }
