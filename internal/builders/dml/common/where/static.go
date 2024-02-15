@@ -16,7 +16,11 @@ func build(alias, field, sign string, value any) string {
 
 	builder := strings.Builder{}
 	if len(alias) > 0 {
-		_, _ = fmt.Fprintf(&builder, "%s.%s %s %s", alias, field, sign, valueString)
+		if !strings.Contains(field, ".") {
+			_, _ = fmt.Fprintf(&builder, "%s.%s %s %s", alias, field, sign, valueString)
+		} else {
+			_, _ = fmt.Fprintf(&builder, "%s %s %s", field, sign, valueString)
+		}
 	} else {
 		_, _ = fmt.Fprintf(&builder, "%s %s %s", field, sign, valueString)
 	}
