@@ -19,7 +19,7 @@ func (builder *Builder) refreshColumns() *Builder {
 
 		// already field name with dot. Example: product.title -> "product"."title"
 		if before, after, found := strings.Cut(builder.columns[i], "."); found {
-			if isNamed(builder.columns[i]) {
+			if isNamed(builder.columns[i]) || isPointer(builder.columns[i]) {
 				continue
 			}
 

@@ -4,3 +4,5 @@
 .DS_Store
 .fleet
 cmd
+logs
+*.log
