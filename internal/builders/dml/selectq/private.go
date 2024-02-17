@@ -17,6 +17,18 @@ func (builder *Builder) refreshColumns() *Builder {
 			continue
 		}
 
+		if isCustom(builder.columns[i]) {
+			before, after, _ := strings.Cut(builder.columns[i], " ")
+			table, column, _ := strings.Cut(before, ".")
+			if strings.Contains(table, "\"") {
+				builder.columns[i] = table + "." + column + " " + after
+			} else {
+				builder.columns[i] = "\"" + table + "\"" + ".\"" + column + "\" " + after
+			}
+
+			continue
+		}
+
 		// already field name with dot. Example: product.title -> "product"."title"
 		if before, after, found := strings.Cut(builder.columns[i], "."); found {
 			if isNamed(builder.columns[i]) || isPointer(builder.columns[i]) {

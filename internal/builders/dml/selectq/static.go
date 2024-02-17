@@ -113,6 +113,10 @@ func isNamed(name string) bool {
 	return strings.Contains(name, "\"")
 }
 
+func isCustom(name string) bool {
+	return strings.Contains(name, " ")
+}
+
 func isPointer(name string) bool {
 	return strings.Contains(name, ".*")
 }
