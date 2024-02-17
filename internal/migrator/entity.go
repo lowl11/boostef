@@ -297,6 +297,8 @@ func convertDataType(name string, column map[string]any, indexes []map[string]an
 		dt = ctypes.Timestamp()
 	case "int", "integer", "bigint", "smallint":
 		dt = ctypes.Integer()
+	case "real":
+		dt = ctypes.Real()
 	case "serial":
 		dt = ctypes.Serial()
 	case "boolean", "bool":
