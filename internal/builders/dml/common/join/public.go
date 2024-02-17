@@ -33,11 +33,21 @@ func (join *Join) Alias(aliasName string) iquery.Join {
 }
 
 func (join *Join) JoinColumn(column string) iquery.Join {
-	join.joinColumn = column
+	before, after, found := strings.Cut(column, ".")
+	if found {
+		join.joinColumn = "\"" + before + "\"." + after
+	} else {
+		join.joinColumn = column
+	}
 	return join
 }
 
 func (join *Join) MainColumn(column string) iquery.Join {
-	join.mainColumn = column
+	before, after, found := strings.Cut(column, ".")
+	if found {
+		join.mainColumn = "\"" + before + "\"." + after
+	} else {
+		join.mainColumn = column
+	}
 	return join
 }
