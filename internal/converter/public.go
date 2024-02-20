@@ -47,7 +47,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 	}
 
 	if tableName == "" {
-		panic("table name not found")
+		panic("table name not found. Name: " + converter.name)
 	}
 
 	rowFields := flexStruct.FieldsRow()
@@ -55,7 +55,11 @@ func (converter *Converter) Entity() imigrate.Entity {
 	columns := make([]iquery.Column, 0, len(rowFields))
 	for _, field := range rowFields {
 		flexField := flex.Field(field)
-		name := flexField.Tag("db")[0]
+		tags := flexField.Tag("db")
+		if len(tags) == 0 {
+			panic("no 'db' tag for: " + field.Name)
+		}
+
 		var defaultValue string
 		var isPrimaryKey bool
 		var foreign string
@@ -93,7 +97,7 @@ func (converter *Converter) Entity() imigrate.Entity {
 		}
 
 		columns = append(columns, builder.
-			Column(name).
+			Column(tags[0]).
 			DataType(dt))
 	}
 
