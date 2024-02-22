@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (builder *Builder) Get(_ ...string) string {
+func (builder *Builder) String(_ ...string) string {
 	query := strings.Builder{}
 	query.WriteString("DROP TABLE ")
 	query.WriteString(builder.tableName)

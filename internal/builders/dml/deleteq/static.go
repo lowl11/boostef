@@ -12,7 +12,7 @@ func appendDelete(query *strings.Builder, tableName string) {
 }
 
 func appendWhere(query *strings.Builder, whereQuery iquery.Where) {
-	whereClause := whereQuery.(iquery.Query).Get()
+	whereClause := whereQuery.(iquery.Query).String()
 	if len(whereClause) == 0 {
 		return
 	}

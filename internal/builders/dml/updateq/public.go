@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (builder *Builder) Get(_ ...string) string {
+func (builder *Builder) String(_ ...string) string {
 	queryBuilder := strings.Builder{}
 	appendUpdate(&queryBuilder, builder.tableName)
 	appendSet(&queryBuilder, builder.setPairs)
@@ -20,7 +20,7 @@ func (builder *Builder) GetParam() (string, bool) {
 	if len(builder.setPairs) > 0 {
 		isParam = types.ToString(builder.setPairs[0].Value) == ""
 	}
-	return builder.Get(), isParam
+	return builder.String(), isParam
 }
 
 func (builder *Builder) From(tableName string) iquery.Update {

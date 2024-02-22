@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (where *Where) Get(_ ...string) string {
+func (where *Where) String(_ ...string) string {
 	separator := and + "\n\t"
 	if where.or {
 		separator = or
@@ -27,12 +27,12 @@ func (where *Where) SetAlias(alias string) iquery.Where {
 }
 
 func (where *Where) Not(condition func(iquery.Where) iquery.Where) iquery.Where {
-	where.add(not(condition(New(where.alias)).(iquery.Query).Get()))
+	where.add(not(condition(New(where.alias)).(iquery.Query).String()))
 	return where
 }
 
 func (where *Where) Or(condition func(iquery.Where) iquery.Where) iquery.Where {
-	where.add(condition(NewOr(where.alias)).(iquery.Query).Get())
+	where.add(condition(NewOr(where.alias)).(iquery.Query).String())
 	return where
 }
 

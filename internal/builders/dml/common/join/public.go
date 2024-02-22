@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (join *Join) Get(_ ...string) string {
+func (join *Join) String(_ ...string) string {
 	query := strings.Builder{}
 
 	query.WriteString(join.joinType)

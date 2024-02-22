@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func (builder *Builder) Get(_ ...string) string {
+func (builder *Builder) String(_ ...string) string {
 	q := strings.Builder{}
 	appendInsert(&q, builder.tableName, builder.pairs)
 	appendValues(&q, builder.pairs, builder.multiplePairs)
@@ -19,7 +19,7 @@ func (builder *Builder) GetParamStatus() (string, bool) {
 	if len(builder.pairs) > 0 {
 		isParam = builder.pairs[0].Value == nil
 	}
-	return builder.Get(), isParam
+	return builder.String(), isParam
 }
 
 func (builder *Builder) Pairs(pairs ...query.Pair) iquery.Insert {

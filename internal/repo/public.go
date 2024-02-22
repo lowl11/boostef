@@ -24,7 +24,7 @@ func (r *repo[T]) Count(ctx context.Context, filter func(iquery.Where)) (int, er
 		selectBuilder.SetAlias(r.aliasName)
 	}
 
-	q := selectBuilder.Get()
+	q := selectBuilder.String()
 
 	ef.DebugPrint(q)
 
@@ -115,7 +115,7 @@ func (r *repo[T]) CreateList(ctx context.Context, entities []T) error {
 		insert.Values(r.getPairs(entity)...)
 	}
 
-	q := insert.Get()
+	q := insert.String()
 
 	ef.DebugPrint(q)
 
@@ -190,7 +190,7 @@ func (r *repo[T]) Remove(ctx context.Context, entity T) error {
 		Delete(r.getTable()).
 		Where(func(where iquery.Where) {
 			where.Equal("id", "$1")
-		}).Get()
+		}).String()
 
 	ef.DebugPrint(q)
 
@@ -219,7 +219,7 @@ func (r *repo[T]) RemoveBy(ctx context.Context, where func(iquery.Where)) error 
 	q := builder.
 		Delete(r.getTable()).
 		Where(where).
-		Get()
+		String()
 
 	ef.DebugPrint(q)
 

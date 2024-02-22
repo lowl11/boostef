@@ -10,7 +10,7 @@ import (
 )
 
 func (session *Session[T]) Get(ctx context.Context) ([]T, error) {
-	q := session.q.Get()
+	q := session.q.String()
 	ef.DebugPrint(q)
 
 	tx := transaction.Get(ctx)

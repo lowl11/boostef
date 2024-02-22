@@ -44,7 +44,7 @@ func appendSet(query *strings.Builder, pairs []query.Pair) {
 }
 
 func appendWhere(query *strings.Builder, where iquery.Where) {
-	whereClause := where.(iquery.Query).Get()
+	whereClause := where.(iquery.Query).String()
 	if len(whereClause) == 0 {
 		return
 	}

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (builder *Builder) Get(params ...string) string {
+func (builder *Builder) String(params ...string) string {
 	if len(params) == 0 {
 		return ""
 	}

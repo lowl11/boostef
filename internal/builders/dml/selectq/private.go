@@ -139,7 +139,7 @@ func (builder *Builder) addJoin(joinType, tableName, aliasName, joinColumn, main
 	builder.joins = append(builder.joins, join.
 		New(joinType).
 		Table(tableName).
-		Alias(aliasName).
+		Alias("\""+aliasName+"\"").
 		JoinColumn(joinColumn).
 		MainColumn(mainColumn))
 	return builder

@@ -27,12 +27,12 @@ func appendTable(query *strings.Builder, tableName, aliasName string, columns []
 func appendJoins(query *strings.Builder, joins []iquery.Join) {
 	for _, join := range joins {
 		query.WriteString("\n\t")
-		query.WriteString(join.Get())
+		query.WriteString(join.String())
 	}
 }
 
 func appendWhere(query *strings.Builder, whereQuery iquery.Where) {
-	whereClause := whereQuery.(iquery.Query).Get()
+	whereClause := whereQuery.(iquery.Query).String()
 	if len(whereClause) == 0 {
 		return
 	}
@@ -61,7 +61,7 @@ func appendHaving(query *strings.Builder, aggregate iquery.Aggregate) {
 	}
 
 	query.WriteString("HAVING ")
-	query.WriteString(aggregate.(iquery.Query).Get())
+	query.WriteString(aggregate.(iquery.Query).String())
 	query.WriteString("\n")
 }
 
@@ -80,7 +80,7 @@ func appendGroupBy(query *strings.Builder, aggregate iquery.Aggregate, columns .
 			}
 		}
 	} else {
-		query.WriteString(aggregate.(iquery.Query).Get())
+		query.WriteString(aggregate.(iquery.Query).String())
 	}
 	query.WriteString("\n")
 }

@@ -4,7 +4,7 @@ import (
 	"github.com/lowl11/boostef/internal/helpers/stringc"
 )
 
-func (aggregate *Aggregate) Get(_ ...string) string {
+func (aggregate *Aggregate) String(_ ...string) string {
 	return aggregate.condition
 }
 

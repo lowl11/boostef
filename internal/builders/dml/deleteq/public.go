@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (builder *Builder) Get(_ ...string) string {
+func (builder *Builder) String(_ ...string) string {
 	// builder
 	query := strings.Builder{}
 	query.Grow(300)

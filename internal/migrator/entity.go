@@ -93,7 +93,7 @@ func (entity *Entity) CreateDestination() error {
 		createTableQuery.PartitionBy(entity.partitionColumns...)
 	}
 
-	err := ef.Execute(ctx, createTableQuery.Get())
+	err := ef.Execute(ctx, createTableQuery.String())
 	if err != nil {
 		return errors.
 			New("Create destination table").
@@ -117,10 +117,10 @@ func (entity *Entity) Compare() error {
 				Equal("table_name", entity.table).
 				NotEqual("table_schema", "information_schema")
 		}).
-		Get())
+		String())
 	if err != nil {
 		return errors.
-			New("Get table columns error").
+			New("String table columns error").
 			SetType("EF_Migrate_GetTableColumnsError").
 			SetError(err).
 			AddContext("table", entity.table)
@@ -132,10 +132,10 @@ func (entity *Entity) Compare() error {
 		Where(func(where iquery.Where) {
 			where.Equal("tablename", entity.table)
 		}).
-		Get())
+		String())
 	if err != nil {
 		return errors.
-			New("Get table indices error").
+			New("String table indices error").
 			SetType("EF_Migrate_GetTableIndicesError").
 			SetError(err).
 			AddContext("table", entity.table)
@@ -180,21 +180,21 @@ func (entity *Entity) Compare() error {
 						AlterColumn(sourceColumn.GetName()).
 						SQL(ef_core.Get().SQL()).
 						Set("NOT NULL").
-						Get())
+						String())
 				case compares.NotNullRemove:
 					newQueries = append(newQueries, builder.
 						AlterTable(entity.table).
 						AlterColumn(sourceColumn.GetName()).
 						SQL(ef_core.Get().SQL()).
 						Drop("NOT NULL").
-						Get())
+						String())
 				case compares.Type:
 					newQueries = append(newQueries, builder.
 						AlterTable(entity.table).
 						AlterColumn(sourceColumn.GetName()).
 						SQL(ef_core.Get().SQL()).
 						Type(sourceColumn.GetDataType()).
-						Get())
+						String())
 				case compares.UniqueAdd:
 					indexName := strings.Builder{}
 					_, _ = fmt.Fprintf(&indexName, "%s_%s_unique", entity.table, sourceColumn.GetName())
@@ -202,7 +202,7 @@ func (entity *Entity) Compare() error {
 						CreateIndex(indexName.String()).
 						Unique().
 						TableColumns(entity.table, sourceColumn.GetName()).
-						Get())
+						String())
 				case compares.UniqueRemove:
 					indexName := strings.Builder{}
 					_, _ = fmt.Fprintf(&indexName, "%s_%s_unique", entity.table, sourceColumn.GetName())
@@ -210,7 +210,7 @@ func (entity *Entity) Compare() error {
 						DropIndex(indexName.String()).
 						SQL(ef_core.Get().SQL()).
 						Table(entity.table).
-						Get())
+						String())
 				}
 			}
 		}
@@ -226,7 +226,7 @@ func (entity *Entity) Compare() error {
 			AddColumn(key).
 			SQL(ef_core.Get().SQL()).
 			Type(value.col.GetDataType()).
-			Get())
+			String())
 	}
 
 	// execute queries

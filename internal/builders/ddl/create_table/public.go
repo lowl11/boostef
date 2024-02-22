@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (builder *Builder) Get(_ ...string) string {
+func (builder *Builder) String(_ ...string) string {
 	query := strings.Builder{}
 	query.Grow(500)
 	query.WriteString("CREATE TABLE ")
@@ -17,7 +17,7 @@ func (builder *Builder) Get(_ ...string) string {
 
 	for index, column := range builder.columns {
 		query.WriteString("\t")
-		query.WriteString(column.Get(builder.sql))
+		query.WriteString(column.String(builder.sql))
 		if index < len(builder.columns)-1 {
 			query.WriteString(",\n")
 		}
